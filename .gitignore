@@ -1,0 +1,8 @@
+.qodo
+.env
+node_modules
+yarn.lock
+
+
+.vercel
+uploads/

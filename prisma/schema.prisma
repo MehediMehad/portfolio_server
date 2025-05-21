@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  name               String
+  profilePhoto       String
+  contactNumber      String
+  role               UserRole
+  email              String   @unique
+  password           String
+  aboutMe            String
+  designation        String
+  projectCount       Int      @default(0)
+  blogCount          Int      @default(0)
+  skillCount         Int      @default(0)
+  socialMediaLinks   String[]
+  gender             Gender   @default(Male)
+  needPasswordChange Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  projects Projects[]
+  blogs    Blogs[]
+
+  @@map("users")
+}
+
+model Projects {
+  id                 String      @unique()
+  projectImage       String
+  title              String
+  overview           String
+  description        String
+  date_time          String
+  techStack          String[]
+  features           String[]
+  WhatILearned       String[]
+  futureImprovements String[]
+  liveURL            String
+  gitHubURL          String
+  is_public          Boolean     @default(true)
+  heroSection        Boolean     @default(false)
+  is_paid            Boolean     @default(false)
+  registration_fee   Float       @default(0)
+  isDeleted          Boolean     @default(false)
+  status             EventStatus @default(UPCOMING)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  authorId String @unique
+  author   User   @relation(fields: [authorId], references: [id])
+
+  @@map("projects")
+}
+
+model Blogs {
+  id               String      @id @default(uuid())
+  title            String
+  description      String
+  coverPhoto       String
+  date_time        String
+  venue            String
+  location         String
+  is_public        Boolean     @default(true)
+  heroSection      Boolean     @default(false)
+  is_paid          Boolean     @default(false)
+  registration_fee Float       @default(0)
+  isDeleted        Boolean     @default(false)
+  status           EventStatus @default(UPCOMING)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  authorId String @unique
+  author   User   @relation(fields: [authorId], references: [id])
+
+  @@map("blogs")
+}
+
+model Events {
+  id               String      @id @default(uuid())
+  title            String
+  description      String
+  coverPhoto       String
+  date_time        String
+  venue            String
+  location         String
+  is_public        Boolean     @default(true)
+  heroSection      Boolean     @default(false)
+  is_paid          Boolean     @default(false)
+  registration_fee Float       @default(0)
+  isDeleted        Boolean     @default(false)
+  status           EventStatus @default(UPCOMING)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  organizerId String
+  userId      String?
+
+  @@map("events")
+}
+
+enum PaymentStatus {
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum ParticipationPaymentStatus {
+  FREE
+  COMPLETED
+  REFUNDED
+}
+
+enum ParticipationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  BANNED
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  END
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+enum Gender {
+  Male
+}
