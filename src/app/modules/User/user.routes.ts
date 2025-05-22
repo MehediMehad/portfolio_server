@@ -37,6 +37,6 @@ router.patch(
     validateRequest(UserValidation.updateStatus),
     UserController.changeProfileStatus
 );
-router.get('/me', auth('ADMIN', 'USER'), UserController.getMyInfo);
+router.get('/me', UserController.getMyInfo);
 
 export const UserRoutes = router;

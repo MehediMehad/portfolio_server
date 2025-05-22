@@ -161,20 +161,11 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
     };
 };
 
-const getMyInfo = async (userId: string) => {
+const getMyInfo = async () => {
+    const email: string = config.myInfo.my_email!;
+
     const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            profilePhoto: true,
-            contactNumber: true,
-            gender: true,
-            role: true,
-            createdAt: true,
-            updatedAt: true
-        }
+        where: { email: email }
     });
 
     if (!user) {

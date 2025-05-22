@@ -58,14 +58,12 @@ const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyInfo = catchAsync(async (req: Request, res: Response) => {
-    const user = req.user;
-
-    const result = await UserService.getMyInfo(user.userId);
+    const result = await UserService.getMyInfo();
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'User info retrieved successfully!',
+        message: 'My info retrieved successfully!',
         data: result
     });
 });
