@@ -10,24 +10,19 @@ const router = express.Router();
 
 router.get('/', auth(USER_ROLE.ADMIN), UserController.getAllFromDB);
 
-router.get(
-    '/non-participants/:eventId',
-    // auth("ADMIN", "USER"),
-    UserController.getNonParticipants
-);
-
 router.post(
-    '/registration',
+    '/create-admin',
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
-        req.body = UserValidation.registration.parse(JSON.parse(req.body.data));
-        return UserController.registrationNewUser(req, res, next);
+        req.body = UserValidation.createAdmin.parse(JSON.parse(req.body.data));
+        return UserController.createMyAccount(req, res, next);
     }
 );
+
 router.put(
     '/update-profile',
     fileUploader.upload.single('file'),
-    auth("ADMIN", "USER"),
+    auth('ADMIN', 'USER'),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = UserValidation.updateProfile.parse(
             JSON.parse(req.body.data)
@@ -43,8 +38,5 @@ router.patch(
     UserController.changeProfileStatus
 );
 router.get('/me', auth('ADMIN', 'USER'), UserController.getMyInfo);
-router.get('/get-my-dashboard-info', auth('ADMIN', 'USER'), UserController.getMyDashboardInfo);
-router.get('/get-admin-dashboard-info', auth('ADMIN', 'USER'), UserController.getAdminDashboardInfo);
-router.get('/admin/users', UserController.getAllUsersWithStats);
 
 export const UserRoutes = router;

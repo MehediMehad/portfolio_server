@@ -6,8 +6,8 @@ import { catchAsync } from '../../../shared/catchAsync';
 import { userFilterableFields } from './user.constant';
 import pick from '../../../shared/pick';
 
-const registrationNewUser = catchAsync(async (req: Request, res: Response) => {
-    const result = await UserService.registrationNewUser(req);
+const createMyAccount = catchAsync(async (req: Request, res: Response) => {
+    const result = await UserService.createMyAccount(req);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -27,20 +27,6 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
         statusCode: httpStatus.OK,
         success: true,
         message: 'Users data fetched!',
-        meta: result.meta,
-        data: result.data
-    });
-});
-
-const getAllUsersWithStats = catchAsync(async (req: Request, res: Response) => {
-    const filters = pick(req.query, ['searchTerm']);
-    const options = pick(req.query, ['page', 'limit']);
-    const result = await UserService.getAllUsersWithStats(filters, options);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Users with stats fetched successfully!',
         meta: result.meta,
         data: result.data
     });
@@ -71,19 +57,6 @@ const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getNonParticipants = catchAsync(async (req: Request, res: Response) => {
-    const { eventId } = req.params;
-    // const userId = req.user.userId;
-    const result = await UserService.getNonParticipants(eventId);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Non Participants user data fetched!',
-        data: result
-    });
-});
-
 const getMyInfo = catchAsync(async (req: Request, res: Response) => {
     const user = req.user;
 
@@ -97,39 +70,10 @@ const getMyInfo = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getMyDashboardInfo = catchAsync(async (req: Request, res: Response) => {
-    const user = req.user;
-    const result = await UserService.getMyDashboardInfo(user.userId);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Dashboard data retrieved successfully!',
-        data: result
-    });
-});
-
-const getAdminDashboardInfo = catchAsync(
-    async (req: Request, res: Response) => {
-        const result = await UserService.getAdminDashboardInfo();
-
-        sendResponse(res, {
-            statusCode: httpStatus.OK,
-            success: true,
-            message: 'Dashboard data retrieved successfully!',
-            data: result
-        });
-    }
-);
-
 export const UserController = {
-    getMyDashboardInfo,
-    registrationNewUser,
+    createMyAccount,
     getAllFromDB,
     changeProfileStatus,
-    getNonParticipants,
     updateUserProfile,
-    getMyInfo,
-    getAdminDashboardInfo,
-    getAllUsersWithStats
+    getMyInfo
 };
