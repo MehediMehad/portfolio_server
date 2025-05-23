@@ -23,6 +23,7 @@ model User {
   socialMediaLinks   String[]
   gender             Gender   @default(Male)
   needPasswordChange Boolean  @default(true)
+  address            String
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 

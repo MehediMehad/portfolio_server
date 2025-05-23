@@ -46,6 +46,7 @@ const createMyAccount = async (req: Request) => {
         profilePhoto: req.body.profilePhoto,
         contactNumber,
         role: UserRole.ADMIN,
+        address: 'Dhaka, Bangladesh',
         aboutMe: "I'm a full-stack developer.",
         designation: 'Full Stack Developer',
         gender: Gender.Male,
@@ -206,6 +207,31 @@ const updateUserProfile = async (userId: string, req: Request) => {
     return result;
 };
 
+const updateUserProfilePhoto = async (userId: string, req: Request) => {
+    const file = req.file as IFile;
+
+    const oldData = await prisma.user.findUniqueOrThrow({
+        where: { id: userId }
+    });
+
+    let profilePhoto = oldData.profilePhoto;
+
+    if (file) {
+        const uploaded = await fileUploader.uploadToCloudinary(file);
+        if (uploaded?.secure_url) {
+            profilePhoto = uploaded.secure_url;
+        }
+    }
+
+    const userData: any = { profilePhoto };
+    const result = await prisma.user.update({
+        where: { id: userId },
+        data: userData
+    });
+
+    return result;
+};
+
 const changeProfileStatus = async (id: string, status: UserRole) => {
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
@@ -228,5 +254,6 @@ export const UserService = {
     getAllFromDB,
     changeProfileStatus,
     updateUserProfile,
-    getMyInfo
+    getMyInfo,
+    updateUserProfilePhoto
 };
