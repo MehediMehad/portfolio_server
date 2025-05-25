@@ -20,7 +20,6 @@ router.post(
 router.put(
     '/update-profile',
     fileUploader.upload.single('file'),
-    // fileUploader.upload.single('icon'),
     auth('ADMIN', 'USER'),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = UserValidation.updateProfile.parse(

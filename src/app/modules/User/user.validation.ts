@@ -10,21 +10,12 @@ const createAdmin = z.object({
 const updateProfile = z.object({
     name: z.string().optional(),
     email: z.string().email({ message: 'Provide a valid email' }).optional(),
-    // skills: z
-    //     .array(
-    //         z.object({
-    //             skill: z.string().min(1, { message: 'Skill is required' })
-    //         })
-    //     )
-    //     .optional(),
-    contactNumber: z
-        .string()
-        .regex(/^\d+$/, { message: 'Contact number must be numeric' })
-        .min(10, { message: 'Contact number must be at least 10 digits' })
-        .max(15, { message: 'Contact number must be at most 15 digits' })
-        .optional(),
+    contactNumber: z.string().optional(),
     profilePhoto: z.string().optional(),
-    gender: z.nativeEnum(Gender).optional()
+    gender: z.nativeEnum(Gender).optional(),
+    designation: z.string().optional(),
+    aboutMe: z.string().optional(),
+    address: z.string().optional()
 });
 
 const updateStatus = z.object({

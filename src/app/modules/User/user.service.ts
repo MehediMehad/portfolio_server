@@ -252,7 +252,7 @@ const updateUserProfile = async (userId: string, req: Request) => {
             aboutMe,
             designation,
             address,
-            contactNumber,
+            contactNumber: contactNumber,
             gender,
             socialMediaLinks: socialMediaLinks
                 ? JSON.parse(socialMediaLinks)
