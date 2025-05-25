@@ -113,6 +113,17 @@ model Skills {
   @@map("skills")
 }
 
+model SocialMedia {
+  id           String   @id @default(uuid())
+  platformName String   @unique
+  url          String
+  icon         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("social_media")
+}
+
 enum BlogStatus {
   PUBIC
   PRIVATE
