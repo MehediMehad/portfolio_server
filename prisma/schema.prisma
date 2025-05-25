@@ -30,12 +30,13 @@ model User {
   // Relations
   projects Projects[]
   blogs    Blogs[]
+  Skills   Skills[]
 
   @@map("users")
 }
 
 model Projects {
-  id                 String      @unique()
+  id                 String        @unique()
   projectImage       String
   title              String
   overview           String
@@ -43,100 +44,83 @@ model Projects {
   date_time          String
   techStack          String[]
   features           String[]
-  WhatILearned       String[]
+  whatILearned       String[]
   futureImprovements String[]
   liveURL            String
   gitHubURL          String
-  is_public          Boolean     @default(true)
-  heroSection        Boolean     @default(false)
-  is_paid            Boolean     @default(false)
-  registration_fee   Float       @default(0)
-  isDeleted          Boolean     @default(false)
-  status             EventStatus @default(UPCOMING)
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+  is_public          Boolean       @default(true)
+  heroSection        Boolean       @default(false)
+  is_paid            Boolean       @default(false)
+  registration_fee   Float         @default(0)
+  isDeleted          Boolean       @default(false)
+  status             ProjectStatus @default(PUBIC)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
-  authorId String @unique
-  author   User   @relation(fields: [authorId], references: [id])
+  authorId String  @unique
+  author   User    @relation(fields: [authorId], references: [id])
+  Skills   Skills? @relation(fields: [skillsId], references: [id])
+  skillsId String?
 
   @@map("projects")
 }
 
 model Blogs {
-  id               String      @id @default(uuid())
+  id               String     @id @default(uuid())
   title            String
   description      String
   coverPhoto       String
   date_time        String
   venue            String
   location         String
-  is_public        Boolean     @default(true)
-  heroSection      Boolean     @default(false)
-  is_paid          Boolean     @default(false)
-  registration_fee Float       @default(0)
-  isDeleted        Boolean     @default(false)
-  status           EventStatus @default(UPCOMING)
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  is_public        Boolean    @default(true)
+  heroSection      Boolean    @default(false)
+  is_paid          Boolean    @default(false)
+  registration_fee Float      @default(0)
+  isDeleted        Boolean    @default(false)
+  status           BlogStatus @default(PUBIC)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 
-  authorId String @unique
-  author   User   @relation(fields: [authorId], references: [id])
+  authorId String  @unique
+  author   User    @relation(fields: [authorId], references: [id])
+  Skills   Skills? @relation(fields: [skillsId], references: [id])
+  skillsId String?
 
   @@map("blogs")
 }
 
-model Events {
-  id               String      @id @default(uuid())
-  title            String
-  description      String
-  coverPhoto       String
-  date_time        String
-  venue            String
-  location         String
-  is_public        Boolean     @default(true)
-  heroSection      Boolean     @default(false)
-  is_paid          Boolean     @default(false)
-  registration_fee Float       @default(0)
-  isDeleted        Boolean     @default(false)
-  status           EventStatus @default(UPCOMING)
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+model Skills {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  level        String
+  icon         String
+  isDeleted    Boolean  @default(false)
+  heroSection  Boolean  @default(false)
+  is_public    Boolean  @default(true)
+  skillCount   Int      @default(0)
+  projectCount Int      @default(0)
+  blogCount    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  organizerId String
-  userId      String?
+  // Relations
+  projects Projects[]
+  blogs    Blogs[]
+  userId   String
+  user     User       @relation(fields: [userId], references: [id])
 
-  @@map("events")
+  @@map("skills")
 }
 
-enum PaymentStatus {
-  PAID
-  FAILED
-  REFUNDED
+enum BlogStatus {
+  PUBIC
+  PRIVATE
 }
 
-enum InvitationStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
-enum ParticipationPaymentStatus {
-  FREE
-  COMPLETED
-  REFUNDED
-}
-
-enum ParticipationStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  BANNED
-}
-
-enum EventStatus {
-  UPCOMING
-  ONGOING
-  END
+enum ProjectStatus {
+  PUBIC
+  PRIVATE
 }
 
 enum UserRole {

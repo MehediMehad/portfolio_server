@@ -8,8 +8,6 @@ import { validateRequest } from '../../middlewares/validateRequest';
 
 const router = express.Router();
 
-router.get('/', auth(USER_ROLE.ADMIN), UserController.getAllFromDB);
-
 router.post(
     '/create-admin',
     fileUploader.upload.single('file'),
@@ -22,6 +20,7 @@ router.post(
 router.put(
     '/update-profile',
     fileUploader.upload.single('file'),
+    // fileUploader.upload.single('icon'),
     auth('ADMIN', 'USER'),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = UserValidation.updateProfile.parse(
@@ -31,12 +30,6 @@ router.put(
     }
 );
 
-router.patch(
-    '/:id/status',
-    auth(USER_ROLE.ADMIN),
-    validateRequest(UserValidation.updateStatus),
-    UserController.changeProfileStatus
-);
 router.get('/me', UserController.getMyInfo);
 
 export const UserRoutes = router;

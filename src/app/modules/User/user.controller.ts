@@ -17,33 +17,6 @@ const createMyAccount = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-    const filters = pick(req.query, userFilterableFields);
-    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-
-    const result = await UserService.getAllFromDB(filters, options);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Users data fetched!',
-        meta: result.meta,
-        data: result.data
-    });
-});
-
-const changeProfileStatus = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const result = await UserService.changeProfileStatus(id, req.body);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Users profile status changed!',
-        data: result
-    });
-});
-
 const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user.userId;
 
@@ -70,8 +43,6 @@ const getMyInfo = catchAsync(async (req: Request, res: Response) => {
 
 export const UserController = {
     createMyAccount,
-    getAllFromDB,
-    changeProfileStatus,
     updateUserProfile,
     getMyInfo
 };

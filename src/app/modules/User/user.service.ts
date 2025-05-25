@@ -4,9 +4,6 @@ import * as bcrypt from 'bcrypt';
 import { fileUploader } from '../../../helpers/fileUploader';
 import { IFile } from '../../interface/file';
 import { Request } from 'express';
-import { IPaginationOptions } from '../../interface/pagination';
-import { paginationHelper } from '../../../helpers/paginationHelper';
-import { userSearchAbleFields } from './user.constant';
 import { jwtHelpers, TPayloadToken } from '../../../helpers/jwtHelpers';
 import config from '../../../config';
 import ApiError from '../../errors/APIError';
@@ -52,9 +49,28 @@ const createMyAccount = async (req: Request) => {
         gender: Gender.Male,
         needPasswordChange: true,
         socialMediaLinks: [
-            'https://github.com/MehediMehad',
-            'https://www.linkedin.com/in/mehedimehad'
+            JSON.stringify({
+                name: 'LinkedIn',
+                url: 'https://www.linkedin.com/in/mehedi-mehad/',
+                icon: 'https://cdn-icons-png.flaticon.com/512/174/174857.png'
+            }),
+            JSON.stringify({
+                name: 'GitHub',
+                url: 'https://www.linkedin.com/in/mehedi-mehad'
+            })
         ],
+        // Skill: [
+        //     // {
+        //     //     id: '63f8b1c2e4b0d3f8b1c2e4b0',
+        //     //     level: 'Expert',
+        //     //     icon: 'https://cdn-icons-png.flaticon.com/512/919/919851.png'
+        //     // },
+        //     // {
+        //     //     id: '63f8b1c2e4b0d3f8b1c2e4b1',
+        //     //     level: 'Intermediate',
+        //     //     icon: 'https://cdn-icons-png.flaticon.com/512/919/919851.png'
+        //     // }
+        // ],
         projectCount: 0,
         blogCount: 0,
         skillCount: 0
@@ -89,79 +105,6 @@ const createMyAccount = async (req: Request) => {
     };
 };
 
-const getAllFromDB = async (params: any, options: IPaginationOptions) => {
-    const { page, limit, skip, sortBy, sortOrder } =
-        paginationHelper.calculatePagination(options);
-    const { searchTerm, ...filterData } = params;
-    const andCondition: Prisma.UserWhereInput[] = [];
-
-    if (params.searchTerm) {
-        andCondition.push({
-            OR: userSearchAbleFields.map((field) => ({
-                [field]: {
-                    contains: params.searchTerm,
-                    mode: 'insensitive' // search case insensitive
-                }
-            }))
-        });
-    }
-    if (Object.keys(filterData).length > 0) {
-        andCondition.push({
-            AND: Object.keys(filterData).map((key) => ({
-                [key]: {
-                    equals: (filterData as any)[key]
-                    // mode: 'insensitive'    // insensitive you can not use equals only use contains
-                }
-            }))
-        });
-    }
-
-    // console.dir(andCondition, { depth: null });
-
-    const whereCondition: Prisma.UserWhereInput =
-        andCondition.length > 0 ? { AND: andCondition } : {};
-
-    const result = await prisma.user.findMany({
-        where: whereCondition,
-        skip,
-        take: limit,
-        orderBy:
-            sortBy && sortOrder
-                ? {
-                      [sortBy]: sortOrder
-                  }
-                : {
-                      createdAt: 'desc'
-                  },
-        select: {
-            id: true,
-            email: true,
-            role: true,
-            needPasswordChange: true,
-            createdAt: true,
-            updatedAt: true
-        }
-        // include: {
-        //     admin: true,
-        //     patient: true,
-        //     doctor: true
-        // }
-    });
-
-    const total = await prisma.user.count({
-        where: whereCondition
-    });
-
-    return {
-        meta: {
-            page,
-            limit,
-            total
-        },
-        data: result
-    };
-};
-
 const getMyInfo = async () => {
     const email: string = config.myInfo.my_email!;
 
@@ -176,7 +119,7 @@ const getMyInfo = async () => {
     return user;
 };
 
-const updateUserProfile = async (userId: string, req: Request) => {
+const updateUserProfile2 = async (userId: string, req: Request) => {
     const file = req.file as IFile;
 
     const oldData = await prisma.user.findUniqueOrThrow({
@@ -206,54 +149,171 @@ const updateUserProfile = async (userId: string, req: Request) => {
 
     return result;
 };
+// const updateUserProfile3 = async (userId: string, req: Request) => {
+//     const file = req.file as Express.Multer.File | undefined;
 
-const updateUserProfilePhoto = async (userId: string, req: Request) => {
+//     if (!file && !req.body.data) {
+//         throw new ApiError(httpStatus.BAD_REQUEST, 'No data provided');
+//     }
+
+//     const { name, email, designation, aboutMe, skills } = req.body;
+
+//     // Upload new profile photo if provided
+//     let profilePhoto = req.user?.profilePhoto;
+//     if (file) {
+//         const uploaded = await fileUploader.uploadToCloudinary(file);
+
+//         if (uploaded && uploaded.secure_url) {
+//             profilePhoto = uploaded.secure_url;
+//         }
+//     }
+
+//     // Update user basic info
+//     const userData = {
+//         name,
+//         email,
+//         designation,
+//         aboutMe,
+//         profilePhoto
+//     };
+
+//     // Upsert skills
+//     type SkillInput = { name: string; description: string; icon?: string };
+
+//     if (Array.isArray(skills) && skills.length > 0) {
+//         for (const skill of skills) {
+//             await prisma.skills.upsert({
+//                 where: {
+//                     user: {
+//                         id: userId,
+//                         name: skill.name
+//                     }
+//                 },
+//                 update: {
+//                     description: skill.description,
+//                     icon:
+//                         skill.icon ||
+//                         'https://cdn-icons-png.flaticon.com/512/919/919851.png'
+//                 },
+//                 create: {
+//                     userId,
+//                     name: skill.name,
+//                     description: skill.description,
+//                     icon:
+//                         skill.icon ||
+//                         'https://cdn-icons-png.flaticon.com/512/919/919851.png'
+//                 }
+//             });
+//         }
+//     }
+
+//     // Save final user update
+//     const updatedUser = await prisma.user.update({
+//         where: { id: userId },
+//         data: userData,
+//         include: {
+//             Skills: true
+//         }
+//     });
+
+//     return updatedUser;
+// };
+
+const updateUserProfile = async (userId: string, req: Request) => {
+    const {
+        name,
+        email,
+        aboutMe,
+        designation,
+        address,
+        contactNumber,
+        gender,
+        socialMediaLinks
+    } = req.body;
+
+    let profilePhoto = req.body.profilePhoto;
     const file = req.file as IFile;
 
-    const oldData = await prisma.user.findUniqueOrThrow({
-        where: { id: userId }
+    // Upload new profile photo if provided
+    if (file) {
+        const uploadedFile = await fileUploader.uploadToCloudinary(file);
+        profilePhoto = uploadedFile?.secure_url;
+    }
+
+    // Update User Profile
+    const updatedUser = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            name,
+            email,
+            profilePhoto,
+            aboutMe,
+            designation,
+            address,
+            contactNumber,
+            gender,
+            socialMediaLinks: socialMediaLinks
+                ? JSON.parse(socialMediaLinks)
+                : undefined
+        }
     });
 
-    let profilePhoto = oldData.profilePhoto;
+    // Handle Skills if provided
+    const skills: string[] = req.body.skills || [];
 
-    if (file) {
-        const uploaded = await fileUploader.uploadToCloudinary(file);
-        if (uploaded?.secure_url) {
-            profilePhoto = uploaded.secure_url;
+    if (skills.length > 0) {
+        for (const skillName of skills) {
+            let skill = await prisma.skills.findFirst({
+                where: {
+                    name: skillName.trim(),
+                    isDeleted: false
+                }
+            });
+
+            if (!skill) {
+                // Create new skill if not exists
+                skill = await prisma.skills.create({
+                    data: {
+                        name: skillName.trim(),
+                        level: `Proficient in ${skillName.trim()}`,
+                        icon: `https://via.placeholder.com/50?text= ${skillName.trim().charAt(0)}`,
+                        user: {
+                            connect: { id: userId }
+                        }
+                    }
+                });
+            }
+
+            // Connect skill to user if not already connected
+            const existingSkill = await prisma.user.findUnique({
+                where: { id: userId },
+                include: {
+                    Skills: {
+                        where: { id: skill.id }
+                    }
+                }
+            });
+
+            if (!existingSkill?.Skills.length) {
+                await prisma.user.update({
+                    where: { id: userId },
+                    data: {
+                        Skills: {
+                            connect: { id: skill.id }
+                        }
+                    }
+                });
+            }
         }
     }
 
-    const userData: any = { profilePhoto };
-    const result = await prisma.user.update({
-        where: { id: userId },
-        data: userData
-    });
-
-    return result;
-};
-
-const changeProfileStatus = async (id: string, status: UserRole) => {
-    const userData = await prisma.user.findUniqueOrThrow({
-        where: {
-            id
-        }
-    });
-
-    const updateUserStatus = await prisma.user.update({
-        where: {
-            id
-        },
-        data: status
-    });
-
-    return updateUserStatus;
+    return updatedUser;
 };
 
 export const UserService = {
     createMyAccount,
-    getAllFromDB,
-    changeProfileStatus,
     updateUserProfile,
-    getMyInfo,
-    updateUserProfilePhoto
+    getMyInfo
 };

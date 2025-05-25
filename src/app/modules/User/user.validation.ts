@@ -10,6 +10,13 @@ const createAdmin = z.object({
 const updateProfile = z.object({
     name: z.string().optional(),
     email: z.string().email({ message: 'Provide a valid email' }).optional(),
+    // skills: z
+    //     .array(
+    //         z.object({
+    //             skill: z.string().min(1, { message: 'Skill is required' })
+    //         })
+    //     )
+    //     .optional(),
     contactNumber: z
         .string()
         .regex(/^\d+$/, { message: 'Contact number must be numeric' })
