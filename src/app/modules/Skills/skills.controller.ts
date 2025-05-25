@@ -26,20 +26,6 @@ const getAllMySkills = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-// Delete Skill
-const deleteSkill = catchAsync(async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
-    const { skillId } = req.params;
-
-    const result = await SkillsService.deleteSkill(userId, skillId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: result.message,
-        data: null
-    });
-});
-
 // Update Skill
 const updateSkill = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user?.userId;
@@ -50,6 +36,20 @@ const updateSkill = catchAsync(async (req: Request, res: Response) => {
         success: true,
         message: 'Skill updated successfully',
         data: result
+    });
+});
+
+// Delete Skill
+const deleteSkill = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+    const { skillId } = req.params;
+
+    const result = await SkillsService.deleteSkill(skillId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: result.message,
+        data: null
     });
 });
 

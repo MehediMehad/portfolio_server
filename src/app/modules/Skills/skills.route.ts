@@ -29,8 +29,6 @@ router.get(
     SkillsController.getAllMySkills
 );
 
-router.delete('/:skillId', auth('USER'), SkillsController.deleteSkill);
-
 router.patch(
     '/',
     fileUploader.upload.single('file'),
@@ -46,5 +44,7 @@ router.patch(
         }
     }
 );
+
+router.delete('/:skillId', auth('ADMIN'), SkillsController.deleteSkill);
 
 export const SkillsRoutes = router;

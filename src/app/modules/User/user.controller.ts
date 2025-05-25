@@ -3,8 +3,6 @@ import { UserService } from './user.service';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { catchAsync } from '../../../shared/catchAsync';
-import { userFilterableFields } from './user.constant';
-import pick from '../../../shared/pick';
 
 const createMyAccount = catchAsync(async (req: Request, res: Response) => {
     const result = await UserService.createMyAccount(req);

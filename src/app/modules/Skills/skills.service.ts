@@ -53,16 +53,7 @@ const getAllMySkills = async () => {
 };
 
 // Delete Skill
-const deleteSkill = async (userId: string, skillId: string) => {
-    const myInfo = await prisma.user.findUnique({
-        where: {
-            id: userId
-        }
-    });
-    if (!myInfo) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'YOUR NOT UNAUTHORIZED!');
-    }
-
+const deleteSkill = async (skillId: string) => {
     const skill = await prisma.skills.findFirst({
         where: {
             id: skillId

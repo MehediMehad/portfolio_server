@@ -18,21 +18,7 @@ const updateProfile = z.object({
     address: z.string().optional()
 });
 
-const updateStatus = z.object({
-    body: z.object({
-        status: z.nativeEnum(UserStatus).refine(
-            (val) => Object.values(UserStatus).includes(val),
-            (val) => ({
-                message: `Invalid status value: '${val}', expected one of [${Object.values(
-                    UserStatus
-                ).join(', ')}]`
-            })
-        )
-    })
-});
-
 export const UserValidation = {
     createAdmin,
-    updateStatus,
     updateProfile
 };
