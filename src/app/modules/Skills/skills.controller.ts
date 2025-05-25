@@ -41,7 +41,6 @@ const updateSkill = catchAsync(async (req: Request, res: Response) => {
 
 // Delete Skill
 const deleteSkill = catchAsync(async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
     const { skillId } = req.params;
 
     const result = await SkillsService.deleteSkill(skillId);
