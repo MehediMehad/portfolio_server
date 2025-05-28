@@ -3,7 +3,9 @@ import { z } from 'zod';
 const createSocialMediaSchema = z.object({
     platformName: z.string().min(1, 'Platform name is required'),
     url: z.string().url('Invalid URL format').min(1, 'URL is required'),
-    icon: z.string({ errorMap: () => ({ message: 'Icon is required' }) })
+    icon: z
+        .string({ errorMap: () => ({ message: 'Icon is required' }) })
+        .optional()
 });
 
 const updatedSocialMediaSchema = z.object({

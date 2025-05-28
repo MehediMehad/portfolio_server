@@ -15,7 +15,6 @@ router.post(
             req.body = SocialMediasValidation.createSocialMediaSchema.parse(
                 JSON.parse(req.body.data)
             );
-
             return SocialMediasController.createSocialMedia(req, res, next);
         } catch (error) {
             next(error);

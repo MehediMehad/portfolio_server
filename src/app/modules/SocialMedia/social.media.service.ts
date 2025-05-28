@@ -12,7 +12,6 @@ import {
 // Create SocialMedia
 const createSocialMedia = async (req: Request) => {
     const { platformName, url }: TCreateSocialMediaBody = req.body;
-
     const file = req.file as IFile;
     if (!file) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'File is required');
@@ -20,7 +19,6 @@ const createSocialMedia = async (req: Request) => {
     if (file) {
         const fileUploadToCloudinary =
             await fileUploader.uploadToCloudinary(file);
-
         req.body.icon = fileUploadToCloudinary?.secure_url;
     }
 
