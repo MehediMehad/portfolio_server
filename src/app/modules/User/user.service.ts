@@ -59,18 +59,6 @@ const createMyAccount = async (req: Request) => {
                 url: 'https://www.linkedin.com/in/mehedi-mehad'
             })
         ],
-        // Skill: [
-        //     // {
-        //     //     id: '63f8b1c2e4b0d3f8b1c2e4b0',
-        //     //     level: 'Expert',
-        //     //     icon: 'https://cdn-icons-png.flaticon.com/512/919/919851.png'
-        //     // },
-        //     // {
-        //     //     id: '63f8b1c2e4b0d3f8b1c2e4b1',
-        //     //     level: 'Intermediate',
-        //     //     icon: 'https://cdn-icons-png.flaticon.com/512/919/919851.png'
-        //     // }
-        // ],
         projectCount: 0,
         blogCount: 0,
         skillCount: 0

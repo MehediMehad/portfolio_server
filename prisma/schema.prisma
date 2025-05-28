@@ -36,7 +36,7 @@ model User {
 }
 
 model Projects {
-  id                 String        @unique()
+  id                 String        @id @default(uuid())
   projectImage       String
   title              String
   overview           String
@@ -50,17 +50,15 @@ model Projects {
   gitHubURL          String
   is_public          Boolean       @default(true)
   heroSection        Boolean       @default(false)
-  is_paid            Boolean       @default(false)
-  registration_fee   Float         @default(0)
   isDeleted          Boolean       @default(false)
   status             ProjectStatus @default(PUBIC)
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 
-  authorId String  @unique
-  author   User    @relation(fields: [authorId], references: [id])
-  Skills   Skills? @relation(fields: [skillsId], references: [id])
-  skillsId String?
+  authorId String @unique
+  author   User   @relation(fields: [authorId], references: [id])
+  // Skills   Skills? @relation(fields: [skillsId], references: [id])
+  // skillsId String?
 
   @@map("projects")
 }
@@ -105,10 +103,10 @@ model Skills {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  projects Projects[]
-  blogs    Blogs[]
-  userId   String
-  user     User       @relation(fields: [userId], references: [id])
+  // projects Projects[]
+  blogs  Blogs[]
+  userId String
+  user   User    @relation(fields: [userId], references: [id])
 
   @@map("skills")
 }

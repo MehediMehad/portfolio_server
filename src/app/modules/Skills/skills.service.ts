@@ -16,7 +16,7 @@ const createSkill = async (req: Request) => {
         const fileUploadToCloudinary =
             await fileUploader.uploadToCloudinary(file);
 
-        req.body.icon = fileUploadToCloudinary?.secure_url;
+        req.body.projectImage = fileUploadToCloudinary?.secure_url;
     }
 
     const existingSkill = await prisma.skills.findFirst({
