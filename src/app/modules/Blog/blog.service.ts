@@ -68,6 +68,20 @@ const createBlog = async (req: Request) => {
     });
 };
 
+const getAllMyBlogs = async (userId: string) => {
+    const blog = await prisma.blogs.findMany({
+        where: {
+            authorId: userId
+        }
+    });
+    if (!blog) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'You have no blogs yet');
+    }
+
+    return blog;
+};
+
 export const BlogsService = {
-    createBlog
+    createBlog,
+    getAllMyBlogs
 };

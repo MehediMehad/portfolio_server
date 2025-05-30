@@ -22,4 +22,10 @@ router.post(
     }
 );
 
+router.get(
+    '/get-my-blogs',
+    auth('ADMIN', 'USER'),
+    BlogsController.getAllMyBlogs
+);
+
 export const BlogsRoutes = router;
