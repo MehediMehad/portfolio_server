@@ -7,7 +7,9 @@ const createBlogSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     overview: z.string().min(1, 'Overview is required'),
     image: z.string().url('Image must be a valid URL').optional(),
-    content: z.string().min(1, 'Content is required'),
+    content: z
+        .string()
+        .min(1000, 'Content must be at least 1000 characters long'),
     tags: tagsSchema,
     is_public: z.boolean().optional().default(true),
     isFeatured: z.boolean().optional().default(false),
