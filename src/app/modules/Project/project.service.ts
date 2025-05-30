@@ -7,8 +7,6 @@ import { fileUploader } from '../../../helpers/fileUploader';
 import { ProjectStatus } from '@prisma/client';
 
 const createProject = async (req: Request) => {
-    console.log(req.body);
-
     // Destructure required fields from request body
     const {
         title,
@@ -75,7 +73,18 @@ const createProject = async (req: Request) => {
     });
 };
 
-const getAllMyProjects = async () => {};
+const getAllMyProjects = async (userId: string) => {
+    const project = await prisma.projects.findMany({
+        where: {
+            authorId: userId
+        }
+    });
+    if (!project) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Project Not Found');
+    }
+
+    return project;
+};
 
 const deleteProject = async (projectId: string) => {
     const project = await prisma.projects.findFirst({
