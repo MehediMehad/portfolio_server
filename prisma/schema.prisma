@@ -64,26 +64,20 @@ model Projects {
 }
 
 model Blogs {
-  id               String     @id @default(uuid())
-  title            String
-  description      String
-  coverPhoto       String
-  date_time        String
-  venue            String
-  location         String
-  is_public        Boolean    @default(true)
-  heroSection      Boolean    @default(false)
-  is_paid          Boolean    @default(false)
-  registration_fee Float      @default(0)
-  isDeleted        Boolean    @default(false)
-  status           BlogStatus @default(PUBIC)
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  id         String   @id @default(uuid())
+  title      String
+  overview   String
+  image      String
+  content    String
+  tags       String[]
+  is_public  Boolean  @default(true)
+  isFeatured Boolean  @default(false)
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  authorId String  @unique
-  author   User    @relation(fields: [authorId], references: [id])
-  Skills   Skills? @relation(fields: [skillsId], references: [id])
-  skillsId String?
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 
   @@map("blogs")
 }
@@ -104,9 +98,8 @@ model Skills {
 
   // Relations
   // projects Projects[]
-  blogs  Blogs[]
   userId String
-  user   User    @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@map("skills")
 }
@@ -120,11 +113,6 @@ model SocialMedia {
   updatedAt    DateTime @updatedAt
 
   @@map("social_media")
-}
-
-enum BlogStatus {
-  PUBIC
-  PRIVATE
 }
 
 enum ProjectStatus {
