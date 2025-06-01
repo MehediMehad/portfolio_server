@@ -4,7 +4,6 @@ import { catchAsync } from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { SkillsService } from './skills.service';
 
-// Create Skill
 const createSkill = catchAsync(async (req: Request, res: Response) => {
     const result = await SkillsService.createSkill(req);
     sendResponse(res, {
@@ -15,7 +14,6 @@ const createSkill = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-// Get All My Skills
 const getAllMySkills = catchAsync(async (req: Request, res: Response) => {
     const result = await SkillsService.getAllMySkills();
     sendResponse(res, {
@@ -26,7 +24,6 @@ const getAllMySkills = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-// Update Skill
 const updateSkill = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user?.userId;
 
@@ -39,7 +36,6 @@ const updateSkill = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-// Delete Skill
 const deleteSkill = catchAsync(async (req: Request, res: Response) => {
     const { skillId } = req.params;
 

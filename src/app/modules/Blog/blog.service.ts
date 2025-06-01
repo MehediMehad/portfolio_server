@@ -134,8 +134,32 @@ const updateMyBlogs = async (userId: string, req: Request) => {
     return updatedBlog;
 };
 
+const deleteBlog = async (blogId: string, userId: string) => {
+    const blog = await prisma.blogs.findFirst({
+        where: {
+            id: blogId,
+            authorId: userId
+        }
+    });
+
+    if (!blog) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found');
+    }
+
+    await prisma.blogs.delete({
+        where: {
+            id: blogId
+        }
+    });
+
+    return {
+        message: 'Blog deleted successfully'
+    };
+};
+
 export const BlogsService = {
     createBlog,
     getAllMyBlogs,
-    updateMyBlogs
+    updateMyBlogs,
+    deleteBlog
 };

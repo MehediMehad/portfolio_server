@@ -40,4 +40,6 @@ router.put(
     }
 );
 
+router.delete('/:blogId', auth('ADMIN', 'USER'), BlogsController.deleteBlog);
+
 export const BlogsRoutes = router;
