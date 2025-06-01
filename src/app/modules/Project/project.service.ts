@@ -85,6 +85,23 @@ const getAllMyProjects = async (userId: string) => {
     return project;
 };
 
+const getSingleProject = async (projectId: string) => {
+    const project = await prisma.projects.findFirst({
+        where: {
+            id: projectId
+        }
+    });
+
+    if (!project) {
+        throw new ApiError(
+            httpStatus.NOT_FOUND,
+            'Project not found or unauthorized'
+        );
+    }
+
+    return project;
+};
+
 const deleteProject = async (projectId: string) => {
     const project = await prisma.projects.findFirst({
         where: {
@@ -158,5 +175,6 @@ export const ProjectsService = {
     createProject,
     getAllMyProjects,
     updateProject,
-    deleteProject
+    deleteProject,
+    getSingleProject
 };

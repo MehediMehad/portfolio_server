@@ -45,6 +45,12 @@ router.patch(
     }
 );
 
+router.get(
+    '/:projectId',
+    auth('ADMIN', 'USER'),
+    ProjectsController.getSingleProject
+);
+
 router.delete('/:projectId', auth('ADMIN'), ProjectsController.deleteProject);
 
 export const ProjectsRoutes = router;

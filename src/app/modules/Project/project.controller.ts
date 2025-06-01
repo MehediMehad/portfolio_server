@@ -24,6 +24,18 @@ const getAllMyProjects = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// get single project by id
+const getSingleProject = catchAsync(async (req: Request, res: Response) => {
+    const { projectId } = req.params;
+    const result = await ProjectsService.getSingleProject(projectId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Project fetched successfully!',
+        data: result
+    });
+});
+
 const updateProject = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user?.userId;
 
@@ -51,6 +63,7 @@ const deleteProject = catchAsync(async (req: Request, res: Response) => {
 export const ProjectsController = {
     createProject,
     getAllMyProjects,
+    getSingleProject,
     updateProject,
     deleteProject
 };
