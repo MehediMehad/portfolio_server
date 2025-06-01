@@ -22,11 +22,9 @@ router.post(
     }
 );
 
-router.get(
-    '/get-my-blogs',
-    auth('ADMIN', 'USER'),
-    BlogsController.getAllMyBlogs
-);
+router.get('/get-my-blogs', BlogsController.getAllMyBlogs);
+
+router.get('/:blogId', BlogsController.getSingleBlog);
 
 router.patch(
     '/update-blog/:blogId',

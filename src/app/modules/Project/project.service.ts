@@ -72,12 +72,8 @@ const createProject = async (req: Request) => {
     });
 };
 
-const getAllMyProjects = async (userId: string) => {
-    const project = await prisma.projects.findMany({
-        where: {
-            authorId: userId
-        }
-    });
+const getAllMyProjects = async () => {
+    const project = await prisma.projects.findMany();
     if (!project) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Project Not Found');
     }

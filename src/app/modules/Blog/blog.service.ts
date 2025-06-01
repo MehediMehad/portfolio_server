@@ -68,11 +68,8 @@ const createBlog = async (req: Request) => {
     });
 };
 
-const getAllMyBlogs = async (userId: string) => {
+const getAllMyBlogs = async () => {
     const blog = await prisma.blogs.findMany({
-        where: {
-            authorId: userId
-        },
         include: {
             author: {
                 select: {
@@ -88,6 +85,29 @@ const getAllMyBlogs = async (userId: string) => {
     });
     if (!blog) {
         throw new ApiError(httpStatus.NOT_FOUND, 'You have no blogs yet');
+    }
+
+    return blog;
+};
+
+const getSingleBlog = async (blogId: string) => {
+    const blog = await prisma.blogs.findFirst({
+        where: {
+            id: blogId
+        },
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    name: true,
+                    profilePhoto: true
+                }
+            }
+        }
+    });
+
+    if (!blog) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'blog not found');
     }
 
     return blog;
@@ -160,6 +180,7 @@ const deleteBlog = async (blogId: string, userId: string) => {
 export const BlogsService = {
     createBlog,
     getAllMyBlogs,
+    getSingleBlog,
     updateMyBlogs,
     deleteBlog
 };

@@ -23,11 +23,7 @@ router.post(
     }
 );
 
-router.get(
-    '/get-my-project',
-    auth('ADMIN', 'USER'),
-    ProjectsController.getAllMyProjects
-);
+router.get('/get-my-project', ProjectsController.getAllMyProjects);
 
 router.patch(
     '/:projectId',
