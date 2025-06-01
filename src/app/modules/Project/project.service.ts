@@ -7,7 +7,6 @@ import { fileUploader } from '../../../helpers/fileUploader';
 import { ProjectStatus } from '@prisma/client';
 
 const createProject = async (req: Request) => {
-    // Destructure required fields from request body
     const {
         title,
         overview,
@@ -112,45 +111,47 @@ const deleteProject = async (projectId: string) => {
 };
 
 const updateProject = async (userId: string, req: Request) => {
-    const { skillId, name, level } = req.body;
-    console.log('req.body', req.body);
-
-    if (!skillId) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Skill ID is required');
-    }
+    const {} = req.body;
 
     const file = req.file as IFile;
     if (file) {
         const fileUploadToCloudinary =
             await fileUploader.uploadToCloudinary(file);
 
-        req.body.icon = fileUploadToCloudinary?.secure_url;
+        req.body.projectImage = fileUploadToCloudinary?.secure_url;
     }
-
-    const skill = await prisma.skills.findFirst({
+    const project = await prisma.projects.findFirst({
         where: {
-            id: skillId,
-            userId: userId
+            id: req.body.projectId,
+            authorId: userId
         }
     });
-
-    if (!skill) {
+    if (!project) {
         throw new ApiError(
             httpStatus.NOT_FOUND,
-            'Skill not found or unauthorized'
+            'Project not found or unauthorized'
         );
     }
-
-    return await prisma.skills.update({
+    const updatedProject = await prisma.projects.update({
         where: {
-            id: skillId
+            id: req.params.projectId
         },
         data: {
-            name,
-            level,
-            icon: req.body.icon
+            title: req.body.title,
+            overview: req.body.overview,
+            description: req.body.description,
+            date_time: req.body.date_time,
+            techStack: req.body.techStack,
+            features: req.body.features,
+            whatILearned: req.body.whatILearned,
+            futureImprovements: req.body.futureImprovements,
+            liveURL: req.body.liveURL,
+            gitHubURL: req.body.gitHubURL,
+            projectImage: req.body.projectImage
         }
     });
+
+    return updatedProject;
 };
 
 export const ProjectsService = {

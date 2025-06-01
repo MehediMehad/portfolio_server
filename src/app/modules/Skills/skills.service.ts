@@ -81,7 +81,6 @@ const deleteSkill = async (skillId: string) => {
 // Update Skill
 const updateSkill = async (userId: string, req: Request) => {
     const { skillId, name, level } = req.body;
-    console.log('req.body', req.body);
 
     if (!skillId) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Skill ID is required');

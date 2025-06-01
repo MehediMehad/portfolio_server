@@ -30,12 +30,10 @@ router.get(
 );
 
 router.patch(
-    '/',
+    '/:projectId',
     fileUploader.upload.single('file'),
     auth('ADMIN'),
     (req: Request, res: Response, next: NextFunction) => {
-        console.log(req.body);
-
         try {
             req.body = ProjectValidation.updatedProjectsSchema.parse(
                 JSON.parse(req.body.data)

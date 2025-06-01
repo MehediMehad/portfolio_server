@@ -28,7 +28,7 @@ router.get(
     BlogsController.getAllMyBlogs
 );
 
-router.put(
+router.patch(
     '/update-blog/:blogId',
     fileUploader.upload.single('file'),
     auth('ADMIN', 'USER'),
