@@ -24,7 +24,21 @@ const getAllMyBlogs = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const updateMyBlogs = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user.userId;
+
+    const result = await BlogsService.updateMyBlogs(userId, req);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Blog updated successfully!',
+        data: result
+    });
+});
+
 export const BlogsController = {
     createBlog,
-    getAllMyBlogs
+    getAllMyBlogs,
+    updateMyBlogs
 };

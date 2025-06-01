@@ -93,7 +93,49 @@ const getAllMyBlogs = async (userId: string) => {
     return blog;
 };
 
+const updateMyBlogs = async (userId: string, req: Request) => {
+    const { title, overview, content, tags, is_public, isFeatured, isDeleted } =
+        req.body;
+
+    let image = req.body.profilePhoto;
+    const file = req.file as IFile;
+
+    // Upload new profile photo if provided
+    if (file) {
+        const uploadedFile = await fileUploader.uploadToCloudinary(file);
+        image = uploadedFile?.secure_url;
+    }
+
+    // Update blog
+    const updatedBlog = await prisma.blogs.update({
+        where: {
+            id: req.params.blogId,
+            authorId: userId
+        },
+        data: {
+            title,
+            overview,
+            content,
+            image,
+            tags: tags
+                ? typeof tags === 'string'
+                    ? JSON.parse(tags)
+                    : tags
+                : [],
+            is_public: is_public !== undefined ? Boolean(is_public) : undefined,
+            isFeatured:
+                isFeatured !== undefined ? Boolean(isFeatured) : undefined,
+            isDeleted: isDeleted !== undefined ? Boolean(isDeleted) : undefined
+        }
+    });
+    if (!updatedBlog) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found');
+    }
+    return updatedBlog;
+};
+
 export const BlogsService = {
     createBlog,
-    getAllMyBlogs
+    getAllMyBlogs,
+    updateMyBlogs
 };

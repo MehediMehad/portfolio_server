@@ -28,4 +28,16 @@ router.get(
     BlogsController.getAllMyBlogs
 );
 
+router.put(
+    '/update-blog/:blogId',
+    fileUploader.upload.single('file'),
+    auth('ADMIN', 'USER'),
+    (req: Request, res: Response, next: NextFunction) => {
+        req.body = BlogsValidation.updateBlogSchema.parse(
+            JSON.parse(req.body.data)
+        );
+        return BlogsController.updateMyBlogs(req, res, next);
+    }
+);
+
 export const BlogsRoutes = router;
