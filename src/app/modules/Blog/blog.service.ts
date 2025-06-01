@@ -72,6 +72,18 @@ const getAllMyBlogs = async (userId: string) => {
     const blog = await prisma.blogs.findMany({
         where: {
             authorId: userId
+        },
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    name: true,
+                    profilePhoto: true
+                }
+            }
+        },
+        orderBy: {
+            updatedAt: 'desc'
         }
     });
     if (!blog) {
