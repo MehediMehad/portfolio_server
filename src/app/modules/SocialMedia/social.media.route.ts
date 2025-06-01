@@ -24,7 +24,6 @@ router.post(
 
 router.get(
     '/get-all-my-social-medias',
-    auth('ADMIN', 'USER'),
     SocialMediasController.getAllMySocialMedias
 );
 

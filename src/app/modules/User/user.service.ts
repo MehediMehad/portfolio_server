@@ -48,17 +48,7 @@ const createMyAccount = async (req: Request) => {
         designation: 'Full Stack Developer',
         gender: Gender.Male,
         needPasswordChange: true,
-        socialMediaLinks: [
-            JSON.stringify({
-                name: 'LinkedIn',
-                url: 'https://www.linkedin.com/in/mehedi-mehad/',
-                icon: 'https://cdn-icons-png.flaticon.com/512/174/174857.png'
-            }),
-            JSON.stringify({
-                name: 'GitHub',
-                url: 'https://www.linkedin.com/in/mehedi-mehad'
-            })
-        ],
+        socialMediaLinks: [],
         projectCount: 0,
         blogCount: 0,
         skillCount: 0
@@ -143,8 +133,6 @@ const updateUserProfile = async (userId: string, req: Request) => {
             contactNumber: contactNumber,
             gender,
             socialMediaLinks: socialMediaLinks
-                ? JSON.parse(socialMediaLinks)
-                : undefined
         }
     });
 
