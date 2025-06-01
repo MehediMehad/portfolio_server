@@ -12,7 +12,12 @@ app.use(cookieParser()); // Parse cookies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded HTML form data
 app.use(
     cors({
-        origin: ['http://localhost:5173', "http://localhost:3000", "https://event-fusion-client.vercel.app"], // Allow requests from frontend
+        origin: [
+            'http://localhost:5173',
+            'http://localhost:3000',
+            'https://mehedimehad.vercel.app',
+            'https://managemehedimehad.vercel.app'
+        ], // Allow requests from frontend
         credentials: true // 👉 Allow sending cookies/credentials
     })
 );
