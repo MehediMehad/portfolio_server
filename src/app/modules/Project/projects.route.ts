@@ -41,11 +41,7 @@ router.patch(
     }
 );
 
-router.get(
-    '/:projectId',
-    auth('ADMIN', 'USER'),
-    ProjectsController.getSingleProject
-);
+router.get('/:projectId', ProjectsController.getSingleProject);
 
 router.delete('/:projectId', auth('ADMIN'), ProjectsController.deleteProject);
 
