@@ -3,7 +3,6 @@ import app from './app';
 import config from './config';
 import seedSuperAdmin from './db/seedSuperAdmin';
 
-
 let server: HttpServer;
 
 async function main() {
