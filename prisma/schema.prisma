@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id                 String   @id @default(uuid())
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   name               String
   profilePhoto       String
   contactNumber      String
@@ -36,7 +36,7 @@ model User {
 }
 
 model Projects {
-  id                 String        @id @default(uuid())
+  id                 String        @id @default(auto()) @map("_id") @db.ObjectId
   projectImage       String
   title              String
   overview           String
@@ -55,7 +55,7 @@ model Projects {
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 
-  authorId String
+  authorId String @db.ObjectId
   author   User   @relation(fields: [authorId], references: [id])
   // Skills   Skills? @relation(fields: [skillsId], references: [id])
   // skillsId String?
@@ -64,7 +64,7 @@ model Projects {
 }
 
 model Blogs {
-  id         String   @id @default(uuid())
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   title      String
   overview   String
   image      String
@@ -76,14 +76,14 @@ model Blogs {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  authorId String
+  authorId String @db.ObjectId
   author   User   @relation(fields: [authorId], references: [id])
 
   @@map("blogs")
 }
 
 model Skills {
-  id           String   @id @default(uuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String   @unique
   level        String
   icon         String
@@ -98,14 +98,14 @@ model Skills {
 
   // Relations
   // projects Projects[]
-  userId String
+  userId String @db.ObjectId
   user   User   @relation(fields: [userId], references: [id])
 
   @@map("skills")
 }
 
 model SocialMedia {
-  id           String   @id @default(uuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   platformName String   @unique
   url          String
   icon         String
