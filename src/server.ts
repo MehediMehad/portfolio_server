@@ -1,6 +1,7 @@
 import type { Server as HttpServer } from 'http';
 import app from './app';
 import config from './config';
+import seedSuperAdmin from './db/seedSuperAdmin';
 
 
 let server: HttpServer;
@@ -10,6 +11,7 @@ async function main() {
         // 🟢 Start the server
         const port = config.port! as string;
         server = app.listen(port, async () => {
+            await seedSuperAdmin()
             console.log(`🚀 Server is running on port ${port}`);
         });
 
