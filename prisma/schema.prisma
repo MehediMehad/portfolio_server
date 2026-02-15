@@ -20,7 +20,6 @@ model User {
   projectCount       Int      @default(0)
   blogCount          Int      @default(0)
   skillCount         Int      @default(0)
-  socialMediaLinks   String[]
   gender             Gender   @default(Male)
   needPasswordChange Boolean  @default(true)
   address            String

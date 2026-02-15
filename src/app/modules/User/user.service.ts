@@ -1,5 +1,5 @@
 import prisma from '../../../shared/prisma';
-import { Gender, Prisma, UserRole } from '@prisma/client';
+import { Gender, UserRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { fileUploader } from '../../../helpers/fileUploader';
 import { IFile } from '../../interface/file';
@@ -48,7 +48,6 @@ const createMyAccount = async (req: Request) => {
         designation: 'Full Stack Developer',
         gender: Gender.Male,
         needPasswordChange: true,
-        socialMediaLinks: [],
         projectCount: 0,
         blogCount: 0,
         skillCount: 0
@@ -132,7 +131,6 @@ const updateUserProfile = async (userId: string, req: Request) => {
             address,
             contactNumber: contactNumber,
             gender,
-            socialMediaLinks: socialMediaLinks
         }
     });
 

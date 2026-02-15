@@ -41,7 +41,7 @@ const updateSocialMedia = catchAsync(async (req: Request, res: Response) => {
 
 // Delete SocialMedia
 const deleteSocialMedia = catchAsync(async (req: Request, res: Response) => {
-    const { socialMediaId } = req.params;
+    const socialMediaId: string = req.params.socialMediaId as string;
 
     const result = await SocialMediasService.deleteSocialMedia(socialMediaId);
     sendResponse(res, {

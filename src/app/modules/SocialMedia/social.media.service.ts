@@ -45,7 +45,11 @@ const createSocialMedia = async (req: Request) => {
 
 // Get All My SocialMedias
 const getAllMySocialMedias = async () => {
-    return await prisma.socialMedia.findMany();
+    return await prisma.socialMedia.findMany({
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
 };
 
 // Update SocialMedia
