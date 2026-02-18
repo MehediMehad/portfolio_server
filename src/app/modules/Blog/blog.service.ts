@@ -1,186 +1,170 @@
-import prisma from '../../../shared/prisma';
-import { Request } from 'express';
-import ApiError from '../../errors/APIError';
+import type { TBlogFilter, TCreateBlogPayload, TUpdateBlogPayload } from './blog.interface';
+import { Prisma } from '@prisma/client';
 import httpStatus from 'http-status';
-import { IFile } from '../../interface/file';
-import { fileUploader } from '../../../helpers/fileUploader';
+import prisma from '../../../shared/prisma';
+import { IPaginationOptions } from '../../interface/pagination';
+import { paginationHelper } from '../../../helpers/paginationHelper';
+import ApiError from '../../errors/APIError';
 
-const createBlog = async (req: Request) => {
-    // Destructure required fields from request body
-    const { title, overview, content, tags, is_public, isFeatured } = req.body;
-
-    // Handle image upload
-    const file = req.file as IFile;
-    if (!file) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Blog image is required');
-    }
-
-    if (file) {
-        const uploadResult = await fileUploader.uploadToCloudinary(file);
-        req.body.image = uploadResult?.secure_url as string;
-    }
-
-    // Check if blog with this title already exists by same author
-    const existingBlog = await prisma.blogs.findFirst({
-        where: {
-            title,
-            authorId: req.user?.userId
-        }
+const createBlog = async (payload: TCreateBlogPayload) => {
+    const result = await prisma.blogs.create({
+        data: payload,
     });
 
-    if (existingBlog) {
-        throw new ApiError(
-            httpStatus.BAD_REQUEST,
-            'A blog with this title already exists'
-        );
+    return result;
+};
+
+const getAllBlogs = async (
+    filter: TBlogFilter,
+    options: IPaginationOptions,
+) => {
+    const { searchTerm, tags } = filter;
+    const { limit, page, skip, sortBy, sortOrder } =
+        paginationHelper.calculatePagination(options);
+
+    const andConditions: Prisma.BlogsWhereInput[] = [
+        { isDeleted: false },
+    ];
+
+    // 🔍 Search (title + overview)
+    if (searchTerm) {
+        andConditions.push({
+            OR: [
+                {
+                    title: {
+                        contains: searchTerm,
+                        mode: 'insensitive',
+                    },
+                },
+                {
+                    overview: {
+                        contains: searchTerm,
+                        mode: 'insensitive',
+                    },
+                },
+            ],
+        });
     }
 
-    // Parse boolean values with fallback
-    const publicStatus = is_public ? Boolean(is_public) : true;
-    const featuredStatus = isFeatured ? Boolean(isFeatured) : false;
-
-    // Convert tags to array if it's a string (e.g., from JSON string)
-    let tagArray: string[] = [];
+    // 🏷 Filter by tags
     if (tags) {
-        try {
-            tagArray = typeof tags === 'string' ? JSON.parse(tags) : tags;
-        } catch (error) {
-            tagArray = [];
-        }
+        andConditions.push({
+            tags: {
+                has: tags,
+            },
+        });
     }
 
-    // Create the blog
-    return await prisma.blogs.create({
-        data: {
-            image: req.body.image,
-            title,
-            overview,
-            content,
-            tags: tagArray,
-            is_public: publicStatus,
-            isFeatured: featuredStatus,
-            author: {
-                connect: {
-                    id: req.user?.userId
-                }
-            }
-        }
-    });
-};
+    const whereClause: Prisma.BlogsWhereInput = {
+        AND: andConditions,
+    };
 
-const getAllMyBlogs = async () => {
-    const blog = await prisma.blogs.findMany({
-        include: {
-            author: {
-                select: {
-                    id: true,
-                    name: true,
-                    profilePhoto: true
-                }
-            }
-        },
+    const result = await prisma.blogs.findMany({
+        where: whereClause,
+        skip,
+        take: limit,
         orderBy: {
-            updatedAt: 'desc'
-        }
-    });
-    if (!blog) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'You have no blogs yet');
-    }
-
-    return blog;
-};
-
-const getSingleBlog = async (blogId: string) => {
-    const blog = await prisma.blogs.findFirst({
-        where: {
-            id: blogId
+            [sortBy]: sortOrder,
         },
-        include: {
-            author: {
-                select: {
-                    id: true,
-                    name: true,
-                    profilePhoto: true
-                }
-            }
-        }
-    });
-
-    if (!blog) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'blog not found');
-    }
-
-    return blog;
-};
-
-const updateMyBlogs = async (userId: string, req: Request) => {
-    const { title, overview, content, tags, is_public, isFeatured, isDeleted } =
-        req.body;
-
-    let image = req.body.profilePhoto;
-    const file = req.file as IFile;
-
-    // Upload new profile photo if provided
-    if (file) {
-        const uploadedFile = await fileUploader.uploadToCloudinary(file);
-        image = uploadedFile?.secure_url;
-    }
-
-    // Update blog
-    const updatedBlog = await prisma.blogs.update({
-        where: {
-            id: req.params.blogId,
-            authorId: userId
+        select: {
+            id: true,
+            title: true,
+            overview: true,
+            image: true,
+            tags: true,
+            createdAt: true,
         },
-        data: {
-            title,
-            overview,
-            content,
-            image,
-            tags: tags
-                ? typeof tags === 'string'
-                    ? JSON.parse(tags)
-                    : tags
-                : [],
-            is_public: is_public !== undefined ? Boolean(is_public) : undefined,
-            isFeatured:
-                isFeatured !== undefined ? Boolean(isFeatured) : undefined,
-            isDeleted: isDeleted !== undefined ? Boolean(isDeleted) : undefined
-        }
-    });
-    if (!updatedBlog) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found');
-    }
-    return updatedBlog;
-};
-
-const deleteBlog = async (blogId: string, userId: string) => {
-    const blog = await prisma.blogs.findFirst({
-        where: {
-            id: blogId,
-            authorId: userId
-        }
     });
 
-    if (!blog) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found');
-    }
-
-    await prisma.blogs.delete({
-        where: {
-            id: blogId
-        }
+    const total = await prisma.blogs.count({
+        where: whereClause,
     });
+
+    const meta = {
+        page,
+        limit,
+        total,
+        totalPage: Math.ceil(total / limit),
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPrevPage: page > 1,
+    };
 
     return {
-        message: 'Blog deleted successfully'
+        meta,
+        data: result,
     };
 };
 
-export const BlogsService = {
-    createBlog,
-    getAllMyBlogs,
-    getSingleBlog,
-    updateMyBlogs,
-    deleteBlog
+const getBlogDetailsById = async (id: string) => {
+    const blog = await prisma.blogs.findFirst({
+        where: {
+            id,
+            isDeleted: false,
+        },
+    });
+
+    if (!blog) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found');
+    }
+
+    return blog;
 };
+
+const updateBlogById = async (
+    id: string,
+    payload: TUpdateBlogPayload,
+) => {
+
+    // return {
+    //     id,
+    //     payload
+    // }
+    const existing = await prisma.blogs.findFirst({
+        where: {
+            id,
+            isDeleted: false,
+        },
+    });
+
+    if (!existing) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found');
+    }
+
+    const result = await prisma.blogs.update({
+        where: { id: id },
+        data: payload,
+    });
+
+    return result;
+};
+
+const softDeleteBlog = async (id: string) => {
+    const existing = await prisma.blogs.findFirst({
+        where: {
+            id,
+            isDeleted: false,
+        },
+    });
+
+    if (!existing) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found');
+    }
+
+    await prisma.blogs.update({
+        where: { id },
+        data: {
+            isDeleted: true,
+        },
+    });
+
+    return null;
+};
+
+export const BlogServices = {
+    createBlog,
+    getAllBlogs,
+    getBlogDetailsById,
+    updateBlogById,
+    softDeleteBlog,
+};
+

@@ -68,18 +68,21 @@ model FeaturedProjects {
 }
 
 model Blogs {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  overview   String
-  image      String
-  content    String
-  tags       String[]
-  is_public  Boolean  @default(true)
-  isFeatured Boolean  @default(false)
-  isDeleted  Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  overview  String
+  image     String
+  content   String
+  tags      String[]
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@index([title])
+  @@index([overview])
+  @@index([createdAt])
+  @@index([isDeleted])
+  @@index([tags], name: "tags_index")
   @@map("blogs")
 }
 

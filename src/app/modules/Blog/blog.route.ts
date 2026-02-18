@@ -1,43 +1,42 @@
-import express, { NextFunction, Request, Response } from 'express';
+import { Router } from 'express';
 import auth from '../../middlewares/auth';
-import { fileUploader } from '../../../helpers/fileUploader';
-import { BlogsController } from './blog.controller';
-import { BlogsValidation } from './blog.validation';
-const router = express.Router();
+import validateRequest from '../../middlewares/validateRequest';
+import { BlogControllers } from './blog.controller';
+import { BlogValidations } from './blog.validation';
+import { CloudinaryFileUploader } from '../../middlewares/cloudinaryMulterMiddleware';
+
+const router = Router();
 
 router.post(
     '/',
     auth('ADMIN'),
-    fileUploader.upload.single('file'),
-    (req: Request, res: Response, next: NextFunction) => {
-        try {
-            req.body = BlogsValidation.createBlogSchema.parse(
-                JSON.parse(req.body.data)
-            );
-
-            return BlogsController.createBlog(req, res, next);
-        } catch (error) {
-            next(error);
-        }
-    }
+    CloudinaryFileUploader.uploadFields, // multipart/form-data → image upload
+    validateRequest(BlogValidations.createBlogSchema, {
+        image: 'single',
+    }),
+    BlogControllers.createBlogIntoDB,
 );
 
-router.get('/get-my-blogs', BlogsController.getAllMyBlogs);
 
-router.get('/:blogId', BlogsController.getSingleBlog);
+router.get('/', BlogControllers.getAllBlogs);
+
+router.get('/:id', BlogControllers.getBlogDetailsById);
 
 router.patch(
-    '/update-blog/:blogId',
-    fileUploader.upload.single('file'),
-    auth('ADMIN', 'USER'),
-    (req: Request, res: Response, next: NextFunction) => {
-        req.body = BlogsValidation.updateBlogSchema.parse(
-            JSON.parse(req.body.data)
-        );
-        return BlogsController.updateMyBlogs(req, res, next);
-    }
+    '/:id',
+    auth('ADMIN'),
+    CloudinaryFileUploader.uploadFields, // multipart/form-data → image upload
+    validateRequest(BlogValidations.updateBlogSchema, {
+        image: 'single',
+    }),
+    BlogControllers.updateBlogById,
 );
 
-router.delete('/:blogId', auth('ADMIN', 'USER'), BlogsController.deleteBlog);
+router.delete(
+    '/:id',
+    auth('ADMIN'),
+    BlogControllers.softDeleteBlog,
+);
 
-export const BlogsRoutes = router;
+export const BlogRoutes = router;
+

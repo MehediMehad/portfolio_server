@@ -12,7 +12,7 @@ router.post(
 
 router.delete(
     '/:projectId',
-    auth('USER'),
+    auth('ADMIN'),
     FeaturedProjectControllers.removeFeatured,
 );
 
