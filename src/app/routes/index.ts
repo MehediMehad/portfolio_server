@@ -6,6 +6,7 @@ import { SocialMediasRoutes } from '../modules/SocialMedia/social.media.route';
 import { ProjectsRoutes } from '../modules/Project/projects.route';
 import { BlogRoutes } from '../modules/Blog/blog.route';
 import { FeaturedProjectRoutes } from '../modules/FeaturedProject/featured.project.route';
+import { FeaturedBlogRoutes } from '../modules/FeaturedBlog/featured.blog.route';
 
 const router = express.Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
     {
         path: '/blogs',
         route: BlogRoutes
+    },
+    {
+        path: '/featured-blogs',
+        route: FeaturedBlogRoutes
     }
 ];
 

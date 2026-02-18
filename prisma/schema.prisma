@@ -56,6 +56,26 @@ model Projects {
   @@map("projects")
 }
 
+model Blogs {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  overview      String
+  image         String
+  content       String
+  tags          String[]
+  isDeleted     Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  featuredBlogs FeaturedBlogs?
+
+  @@index([title])
+  @@index([overview])
+  @@index([createdAt])
+  @@index([isDeleted])
+  @@index([tags], name: "tags_index")
+  @@map("blogs")
+}
+
 model FeaturedProjects {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   projectId String   @db.ObjectId
@@ -67,23 +87,15 @@ model FeaturedProjects {
   @@map("featured_projects")
 }
 
-model Blogs {
+model FeaturedBlogs {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  overview  String
-  image     String
-  content   String
-  tags      String[]
-  isDeleted Boolean  @default(false)
+  blogId    String   @db.ObjectId
+  blog      Blogs    @relation(fields: [blogId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([title])
-  @@index([overview])
-  @@index([createdAt])
-  @@index([isDeleted])
-  @@index([tags], name: "tags_index")
-  @@map("blogs")
+  @@unique([blogId])
+  @@map("featured_blogs")
 }
 
 model Skills {
