@@ -17,7 +17,7 @@ router.post(
     ProjectsController.createProject,
 );
 
-router.get('/get-my-project', ProjectsController.getAllMyProjects);
+router.get('/', ProjectsController.getAllProjects);
 
 router.patch(
     '/:projectId',

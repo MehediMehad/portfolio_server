@@ -2,10 +2,11 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { catchAsync } from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { ProjectsService } from './project.service';
+import { ProjectServices } from './project.service';
+import pick from '../../../shared/pick';
 
 const createProject = catchAsync(async (req: Request, res: Response) => {
-    const result = await ProjectsService.createProject(req.body);
+    const result = await ProjectServices.createProject(req.body);
     sendResponse(res, {
         statusCode: httpStatus.CREATED,
         success: true,
@@ -14,20 +15,24 @@ const createProject = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getAllMyProjects = catchAsync(async (req: Request, res: Response) => {
-    const result = await ProjectsService.getAllMyProjects();
+const getAllProjects = catchAsync(async (req: Request, res: Response) => {
+    const filter = pick(req.query, ['searchTerm', 'techStack', 'is_public']);
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = await ProjectServices.getAllProjects(filter, options);
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'Project fetched successfully!',
-        data: result
+        message: 'Projects fetched successfully',
+        meta: result.meta,
+        data: result.data,
     });
 });
 
 // get single project by id
 const getSingleProject = catchAsync(async (req: Request, res: Response) => {
     const { projectId } = req.params;
-    const result = await ProjectsService.getSingleProject(projectId);
+    const result = await ProjectServices.getSingleProject(projectId);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -39,7 +44,7 @@ const getSingleProject = catchAsync(async (req: Request, res: Response) => {
 const updateProject = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user?.userId;
 
-    const result = await ProjectsService.updateProject(userId, req);
+    const result = await ProjectServices.updateProject(userId, req);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -51,7 +56,7 @@ const updateProject = catchAsync(async (req: Request, res: Response) => {
 const deleteProject = catchAsync(async (req: Request, res: Response) => {
     const { projectId } = req.params;
 
-    const result = await ProjectsService.deleteProject(projectId);
+    const result = await ProjectServices.deleteProject(projectId);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -62,7 +67,7 @@ const deleteProject = catchAsync(async (req: Request, res: Response) => {
 
 export const ProjectsController = {
     createProject,
-    getAllMyProjects,
+    getAllProjects,
     getSingleProject,
     updateProject,
     deleteProject

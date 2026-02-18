@@ -30,6 +30,16 @@ const calculatePagination = (options: IOptions): IOptionsResults => {
     };
 };
 
+// Pagination meta
+// const meta = {
+//   page,
+//   limit,
+//   total,
+//   totalPages: Math.ceil(total / limit),
+//   hasNextPage: page < Math.ceil(total / limit),
+//   hasPrevPage: page > 1,
+// };
+
 export const paginationHelper = {
     calculatePagination
 };
