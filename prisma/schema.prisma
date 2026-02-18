@@ -30,10 +30,10 @@ model User {
 }
 
 model Projects {
-  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                 String            @id @default(auto()) @map("_id") @db.ObjectId
   image              String
-  title              String   @unique
-  overview           String   @unique
+  title              String
+  overview           String
   description        String
   techStack          String[]
   features           String[]
@@ -41,15 +41,30 @@ model Projects {
   futureImprovements String[]
   liveURL            String
   gitHubURL          String
-  is_public          Boolean  @default(true)
-  isDeleted          Boolean  @default(false)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  is_public          Boolean           @default(true)
+  isDeleted          Boolean           @default(false)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  featuredProjects   FeaturedProjects?
 
+  @@index([title])
+  @@index([overview])
+  @@index([createdAt])
   @@index([is_public])
   @@index([isDeleted])
   @@index([techStack], name: "techStack_index")
   @@map("projects")
+}
+
+model FeaturedProjects {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  projectId String   @db.ObjectId
+  project   Projects @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId])
+  @@map("featured_projects")
 }
 
 model Blogs {
