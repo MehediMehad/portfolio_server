@@ -18,9 +18,9 @@ const catchAsync_1 = require("../../../shared/catchAsync");
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const project_service_1 = require("./project.service");
 const createProject = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield project_service_1.ProjectsService.createProject(req);
+    const result = yield project_service_1.ProjectsService.createProject(req.body);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
+        statusCode: http_status_1.default.CREATED,
         success: true,
         message: 'Project created successfully!',
         data: result

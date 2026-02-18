@@ -5,9 +5,9 @@ import sendResponse from '../../../shared/sendResponse';
 import { ProjectsService } from './project.service';
 
 const createProject = catchAsync(async (req: Request, res: Response) => {
-    const result = await ProjectsService.createProject(req);
+    const result = await ProjectsService.createProject(req.body);
     sendResponse(res, {
-        statusCode: httpStatus.OK,
+        statusCode: httpStatus.CREATED,
         success: true,
         message: 'Project created successfully!',
         data: result

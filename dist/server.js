@@ -14,15 +14,49 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./config"));
-const port = config_1.default.port;
+const seedSuperAdmin_1 = __importDefault(require("./db/seedSuperAdmin"));
+let server;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const server = app_1.default.listen(port, () => {
-            console.log(`🚀 Server listening at http://localhost:${port} 😎`);
-        });
+        try {
+            // 🟢 Start the server
+            const port = config_1.default.port;
+            server = app_1.default.listen(port, () => __awaiter(this, void 0, void 0, function* () {
+                yield (0, seedSuperAdmin_1.default)();
+                console.log(`🚀 Server is running on port ${port}`);
+            }));
+            // 🔐 Handle Uncaught Exceptions
+            process.on('uncaughtException', (error) => {
+                console.error('❌ Uncaught Exception:', error);
+                shutdown();
+            });
+            // 🔐 Handle Unhandled Promise Rejections
+            process.on('unhandledRejection', (reason) => {
+                console.error('❌ Unhandled Rejection:', reason);
+                shutdown();
+            });
+            // 🛑 Graceful Shutdown
+            process.on('SIGTERM', () => {
+                console.info('🔁 SIGTERM received.');
+                shutdown();
+            });
+        }
+        catch (error) {
+            console.error('❌ Failed to start server:', error);
+            process.exit(1);
+        }
     });
 }
-main().catch((error) => {
-    console.error('❌ Server failed to start', error);
-    process.exit(1);
-});
+// 🔁 Graceful Server Shutdown
+function shutdown() {
+    if (server) {
+        server.close(() => {
+            console.info('🔒 Server closed gracefully.');
+            process.exit(1);
+        });
+    }
+    else {
+        process.exit(1);
+    }
+}
+main();

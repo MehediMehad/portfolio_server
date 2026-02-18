@@ -22,13 +22,6 @@ const superAdminData: Prisma.UserCreateInput = {
     blogCount: 0,
     skillCount: 0,
 
-    socialMediaLinks: [
-        'https://github.com/yourusername',
-        'https://linkedin.com/in/yourusername',
-        'https://twitter.com/yourusername',
-        'https://mehedimehadportfolio.vercel.app'
-    ],
-
     gender: Gender.Male,
 
     needPasswordChange: false,

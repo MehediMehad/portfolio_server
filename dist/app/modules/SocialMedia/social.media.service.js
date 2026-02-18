@@ -46,7 +46,11 @@ const createSocialMedia = (req) => __awaiter(void 0, void 0, void 0, function* (
 });
 // Get All My SocialMedias
 const getAllMySocialMedias = () => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma_1.default.socialMedia.findMany();
+    return yield prisma_1.default.socialMedia.findMany({
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
 });
 // Update SocialMedia
 const updateSocialMedia = (req) => __awaiter(void 0, void 0, void 0, function* () {

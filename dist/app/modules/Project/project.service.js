@@ -16,53 +16,11 @@ exports.ProjectsService = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const APIError_1 = __importDefault(require("../../errors/APIError"));
 const http_status_1 = __importDefault(require("http-status"));
-const fileUploader_1 = require("../../../helpers/fileUploader");
-const client_1 = require("@prisma/client");
-const createProject = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, overview, description, date_time, techStack, features, whatILearned, futureImprovements, liveURL, gitHubURL } = req.body;
-    // Handle image upload
-    const file = req.file;
-    if (!file) {
-        throw new APIError_1.default(http_status_1.default.BAD_REQUEST, 'Project image is required');
-    }
-    if (file) {
-        const uploadResult = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-        req.body.projectImage = uploadResult === null || uploadResult === void 0 ? void 0 : uploadResult.secure_url;
-    }
-    // Check if project with this title already exists (optional)
-    const existingProject = yield prisma_1.default.projects.findFirst({
-        where: {
-            title,
-            authorId: req.user.userId
-        }
+const createProject = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.projects.create({
+        data: payload,
     });
-    if (existingProject) {
-        throw new APIError_1.default(http_status_1.default.BAD_REQUEST, 'A project with this title already exists');
-    }
-    // Create the project
-    return yield prisma_1.default.projects.create({
-        data: {
-            projectImage: req.body.projectImage,
-            title,
-            overview,
-            description,
-            date_time,
-            techStack,
-            features,
-            whatILearned,
-            futureImprovements,
-            liveURL,
-            gitHubURL,
-            is_public: true,
-            heroSection: true,
-            status: client_1.ProjectStatus.PUBIC,
-            author: {
-                connect: {
-                    id: req.user.userId
-                }
-            }
-        }
-    });
+    return result;
 });
 const getAllMyProjects = () => __awaiter(void 0, void 0, void 0, function* () {
     const project = yield prisma_1.default.projects.findMany();
@@ -101,40 +59,44 @@ const deleteProject = (projectId) => __awaiter(void 0, void 0, void 0, function*
     };
 });
 const updateProject = (userId, req) => __awaiter(void 0, void 0, void 0, function* () {
-    const {} = req.body;
-    const file = req.file;
-    if (file) {
-        const fileUploadToCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-        req.body.projectImage = fileUploadToCloudinary === null || fileUploadToCloudinary === void 0 ? void 0 : fileUploadToCloudinary.secure_url;
-    }
-    const project = yield prisma_1.default.projects.findFirst({
-        where: {
-            id: req.body.projectId,
-            authorId: userId
-        }
-    });
-    if (!project) {
-        throw new APIError_1.default(http_status_1.default.NOT_FOUND, 'Project not found or unauthorized');
-    }
-    const updatedProject = yield prisma_1.default.projects.update({
-        where: {
-            id: req.params.projectId
-        },
-        data: {
-            title: req.body.title,
-            overview: req.body.overview,
-            description: req.body.description,
-            date_time: req.body.date_time,
-            techStack: req.body.techStack,
-            features: req.body.features,
-            whatILearned: req.body.whatILearned,
-            futureImprovements: req.body.futureImprovements,
-            liveURL: req.body.liveURL,
-            gitHubURL: req.body.gitHubURL,
-            projectImage: req.body.projectImage
-        }
-    });
-    return updatedProject;
+    // const { } = req.body;
+    // const file = req.file as IFile;
+    // if (file) {
+    //     const fileUploadToCloudinary =
+    //         await fileUploader.uploadToCloudinary(file);
+    //     req.body.projectImage = fileUploadToCloudinary?.secure_url;
+    // }
+    // const project = await prisma.projects.findFirst({
+    //     where: {
+    //         id: req.body.projectId,
+    //         authorId: userId
+    //     }
+    // });
+    // if (!project) {
+    //     throw new ApiError(
+    //         httpStatus.NOT_FOUND,
+    //         'Project not found or unauthorized'
+    //     );
+    // }
+    // const updatedProject = await prisma.projects.update({
+    //     where: {
+    //         id: req.params.projectId
+    //     },
+    //     data: {
+    //         title: req.body.title,
+    //         overview: req.body.overview,
+    //         description: req.body.description,
+    //         date_time: req.body.date_time,
+    //         techStack: req.body.techStack,
+    //         features: req.body.features,
+    //         whatILearned: req.body.whatILearned,
+    //         futureImprovements: req.body.futureImprovements,
+    //         liveURL: req.body.liveURL,
+    //         gitHubURL: req.body.gitHubURL,
+    //         projectImage: req.body.projectImage
+    //     }
+    // });
+    // return updatedProject;
 });
 exports.ProjectsService = {
     createProject,

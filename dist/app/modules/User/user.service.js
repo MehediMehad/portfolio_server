@@ -83,7 +83,6 @@ const createMyAccount = (req) => __awaiter(void 0, void 0, void 0, function* () 
         designation: 'Full Stack Developer',
         gender: client_1.Gender.Male,
         needPasswordChange: true,
-        socialMediaLinks: [],
         projectCount: 0,
         blogCount: 0,
         skillCount: 0
@@ -137,7 +136,6 @@ const updateUserProfile = (userId, req) => __awaiter(void 0, void 0, void 0, fun
             address,
             contactNumber: contactNumber,
             gender,
-            socialMediaLinks: socialMediaLinks
         }
     });
     // Handle Skills if provided

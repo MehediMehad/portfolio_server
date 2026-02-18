@@ -26,39 +26,29 @@ model User {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  // Relations
-  projects Projects[]
-  blogs    Blogs[]
-  Skills   Skills[]
-
   @@map("users")
 }
 
 model Projects {
-  id                 String        @id @default(auto()) @map("_id") @db.ObjectId
-  projectImage       String
-  title              String
-  overview           String
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  image              String
+  title              String   @unique
+  overview           String   @unique
   description        String
-  date_time          String
   techStack          String[]
   features           String[]
   whatILearned       String[]
   futureImprovements String[]
   liveURL            String
   gitHubURL          String
-  is_public          Boolean       @default(true)
-  heroSection        Boolean       @default(false)
-  isDeleted          Boolean       @default(false)
-  status             ProjectStatus @default(PUBIC)
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
+  is_public          Boolean  @default(true)
+  isDeleted          Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  authorId String @db.ObjectId
-  author   User   @relation(fields: [authorId], references: [id])
-  // Skills   Skills? @relation(fields: [skillsId], references: [id])
-  // skillsId String?
-
+  @@index([is_public])
+  @@index([isDeleted])
+  @@index([techStack], name: "techStack_index")
   @@map("projects")
 }
 
@@ -74,9 +64,6 @@ model Blogs {
   isDeleted  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  authorId String @db.ObjectId
-  author   User   @relation(fields: [authorId], references: [id])
 
   @@map("blogs")
 }
@@ -95,11 +82,6 @@ model Skills {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  // Relations
-  // projects Projects[]
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
-
   @@map("skills")
 }
 
@@ -115,7 +97,7 @@ model SocialMedia {
 }
 
 enum ProjectStatus {
-  PUBIC
+  PUBLIC
   PRIVATE
 }
 

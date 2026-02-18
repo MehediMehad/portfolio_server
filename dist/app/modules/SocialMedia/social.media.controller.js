@@ -51,7 +51,7 @@ const updateSocialMedia = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(v
 }));
 // Delete SocialMedia
 const deleteSocialMedia = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { socialMediaId } = req.params;
+    const socialMediaId = req.params.socialMediaId;
     const result = yield social_media_service_1.SocialMediasService.deleteSocialMedia(socialMediaId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

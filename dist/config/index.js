@@ -13,7 +13,8 @@ exports.default = {
         jwt_secret: process.env.JWT_SECRET,
         expires_in: process.env.EXPIRES_IN, // "5m"
         refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
-        refresh_token_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN // "30d"
+        refresh_token_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN, // "30d"
+        bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS
     },
     reset_password: {
         secret_token: process.env.RESET_PASSWORD_TOKEN,
