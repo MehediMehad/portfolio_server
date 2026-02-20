@@ -111,43 +111,16 @@ const getAllProjects = async (
 const getSingleProject = async (projectId: string) => {
     const project = await prisma.projects.findFirst({
         where: {
-            id: projectId
+            id: projectId,
+            isDeleted: false
         }
     });
 
     if (!project) {
-        throw new ApiError(
-            httpStatus.NOT_FOUND,
-            'Project not found or unauthorized'
-        );
+        throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
     }
 
     return project;
-};
-
-const deleteProject = async (projectId: string) => {
-    const project = await prisma.projects.findFirst({
-        where: {
-            id: projectId
-        }
-    });
-
-    if (!project) {
-        throw new ApiError(
-            httpStatus.NOT_FOUND,
-            'Skill not found or unauthorized'
-        );
-    }
-
-    await prisma.projects.delete({
-        where: {
-            id: projectId
-        }
-    });
-
-    return {
-        message: 'Project deleted successfully'
-    };
 };
 
 const updateProjectById = async (projectId: string, payload: TUpdateProjectPayload) => {
@@ -172,10 +145,79 @@ const updateProjectById = async (projectId: string, payload: TUpdateProjectPaylo
     return result;
 };
 
+const softDeleteProject = async (projectId: string) => {
+    const project = await prisma.projects.findFirst({
+        where: {
+            id: projectId
+        }
+    });
+
+    if (!project) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
+    }
+
+    const result = await prisma.projects.update({
+        where: { id: projectId },
+        data: {
+            isDeleted: true,
+        },
+    });
+
+    return result;
+};
+
+const restoreProject = async (projectId: string) => {
+    const project = await prisma.projects.findFirst({
+        where: {
+            id: projectId
+        },
+        select: {
+            isDeleted: true
+        }
+    });
+
+    if (!project) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
+    }
+
+    if (!project.isDeleted) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Project is not deleted');
+    }
+
+    const result = await prisma.projects.update({
+        where: { id: projectId },
+        data: {
+            isDeleted: false,
+        },
+    });
+
+    return result;
+};
+
+const hardDeleteProject = async (projectId: string) => {
+    const project = await prisma.projects.findFirst({
+        where: {
+            id: projectId
+        }
+    });
+
+    if (!project) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
+    }
+
+    const result = await prisma.projects.delete({
+        where: { id: projectId },
+    });
+
+    return result;
+};
+
 export const ProjectServices = {
     createProject,
     getAllProjects,
+    getSingleProject,
     updateProjectById,
-    deleteProject,
-    getSingleProject
+    softDeleteProject,
+    restoreProject,
+    hardDeleteProject
 };

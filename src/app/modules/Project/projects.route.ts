@@ -7,6 +7,7 @@ import validateRequest from '../../middlewares/validateRequest';
 
 const router = express.Router();
 
+// POST METHOD
 router.post(
     '/',
     auth('ADMIN'),
@@ -17,8 +18,11 @@ router.post(
     ProjectsController.createProject,
 );
 
+// GET METHOD
 router.get('/', ProjectsController.getAllProjects);
+router.get('/:id', ProjectsController.getSingleProject);
 
+// PATCH METHOD
 router.patch(
     '/:id',
     auth('ADMIN'),
@@ -29,8 +33,28 @@ router.patch(
     ProjectsController.updateProjectById,
 );
 
-router.get('/:id', ProjectsController.getSingleProject);
+router.patch(
+    '/:id/soft-delete',
+    auth('ADMIN'),
+    ProjectsController.softDeleteProject
+);
 
-router.delete('/:id', auth('ADMIN'), ProjectsController.deleteProject);
+
+router.patch(
+    '/:id/restore',
+    auth('ADMIN'),
+    ProjectsController.restoreProject
+);
+
+
+// DELETE METHOD
+router.delete(
+    '/:id',
+    auth('ADMIN'),
+    ProjectsController.hardDeleteProject
+);
+
+
+
 
 export const ProjectsRoutes = router;

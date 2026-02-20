@@ -53,22 +53,49 @@ const updateProjectById = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const deleteProject = catchAsync(async (req: Request, res: Response) => {
+const softDeleteProject = catchAsync(async (req: Request, res: Response) => {
     const projectId = req.params.id as string;
 
-    const result = await ProjectServices.deleteProject(projectId);
+    const result = await ProjectServices.softDeleteProject(projectId);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: result.message,
-        data: null
+        message: 'Project soft deleted successfully',
+        data: result
     });
 });
+
+const restoreProject = catchAsync(async (req: Request, res: Response) => {
+    const projectId = req.params.id as string;
+
+    const result = await ProjectServices.restoreProject(projectId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Project restored successfully',
+        data: result
+    });
+});
+
+const hardDeleteProject = catchAsync(async (req: Request, res: Response) => {
+    const projectId = req.params.id as string;
+
+    const result = await ProjectServices.hardDeleteProject(projectId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Project restored successfully',
+        data: result
+    });
+});
+
 
 export const ProjectsController = {
     createProject,
     getAllProjects,
     getSingleProject,
     updateProjectById,
-    deleteProject
+    softDeleteProject,
+    restoreProject,
+    hardDeleteProject
 };
