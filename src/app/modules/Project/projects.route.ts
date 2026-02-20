@@ -20,23 +20,17 @@ router.post(
 router.get('/', ProjectsController.getAllProjects);
 
 router.patch(
-    '/:projectId',
-    // fileUploader.upload.single('file'),
+    '/:id',
     auth('ADMIN'),
-    (req: Request, res: Response, next: NextFunction) => {
-        try {
-            req.body = ProjectValidation.updatedProjectsSchema.parse(
-                JSON.parse(req.body.data)
-            );
-            return ProjectsController.updateProject(req, res, next);
-        } catch (error) {
-            next(error);
-        }
-    }
+    CloudinaryFileUploader.uploadFields, // multipart/form-data → image upload
+    validateRequest(ProjectValidation.updatedProjectsSchema, {
+        image: 'single',
+    }),
+    ProjectsController.updateProjectById,
 );
 
-router.get('/:projectId', ProjectsController.getSingleProject);
+router.get('/:id', ProjectsController.getSingleProject);
 
-router.delete('/:projectId', auth('ADMIN'), ProjectsController.deleteProject);
+router.delete('/:id', auth('ADMIN'), ProjectsController.deleteProject);
 
 export const ProjectsRoutes = router;

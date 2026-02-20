@@ -3,7 +3,7 @@ import { Request } from 'express';
 import ApiError from '../../errors/APIError';
 import httpStatus from 'http-status';
 import { IFile } from '../../interface/file';
-import { TCreateProjectPayload, TProjectsFilter } from './projects.interface';
+import { TCreateProjectPayload, TProjectsFilter, TUpdateProjectPayload } from './projects.interface';
 import { Prisma } from '@prisma/client';
 import { IPaginationOptions } from '../../interface/pagination';
 import { paginationHelper } from '../../../helpers/paginationHelper';
@@ -150,54 +150,32 @@ const deleteProject = async (projectId: string) => {
     };
 };
 
-const updateProject = async (userId: string, req: Request) => {
-    // const { } = req.body;
+const updateProjectById = async (projectId: string, payload: TUpdateProjectPayload) => {
+    const project = await prisma.projects.findFirst({
+        where: {
+            id: projectId
+        }
+    });
 
-    // const file = req.file as IFile;
-    // if (file) {
-    //     const fileUploadToCloudinary =
-    //         await fileUploader.uploadToCloudinary(file);
+    if (!project) {
+        throw new ApiError(
+            httpStatus.NOT_FOUND,
+            'Project not found or unauthorized'
+        );
+    }
 
-    //     req.body.projectImage = fileUploadToCloudinary?.secure_url;
-    // }
-    // const project = await prisma.projects.findFirst({
-    //     where: {
-    //         id: req.body.projectId,
-    //         authorId: userId
-    //     }
-    // });
-    // if (!project) {
-    //     throw new ApiError(
-    //         httpStatus.NOT_FOUND,
-    //         'Project not found or unauthorized'
-    //     );
-    // }
-    // const updatedProject = await prisma.projects.update({
-    //     where: {
-    //         id: req.params.projectId
-    //     },
-    //     data: {
-    //         title: req.body.title,
-    //         overview: req.body.overview,
-    //         description: req.body.description,
-    //         date_time: req.body.date_time,
-    //         techStack: req.body.techStack,
-    //         features: req.body.features,
-    //         whatILearned: req.body.whatILearned,
-    //         futureImprovements: req.body.futureImprovements,
-    //         liveURL: req.body.liveURL,
-    //         gitHubURL: req.body.gitHubURL,
-    //         projectImage: req.body.projectImage
-    //     }
-    // });
+    const result = await prisma.projects.update({
+        where: { id: projectId },
+        data: payload,
+    });
 
-    // return updatedProject;
+    return result;
 };
 
 export const ProjectServices = {
     createProject,
     getAllProjects,
-    updateProject,
+    updateProjectById,
     deleteProject,
     getSingleProject
 };

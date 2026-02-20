@@ -115,10 +115,6 @@ const updateBlogById = async (
     payload: TUpdateBlogPayload,
 ) => {
 
-    // return {
-    //     id,
-    //     payload
-    // }
     const existing = await prisma.blogs.findFirst({
         where: {
             id,

@@ -1,7 +1,8 @@
 import type { z } from 'zod';
-import { createProjectSchema } from './projects.validation';
+import { createProjectSchema, updatedProjectsSchema } from './projects.validation';
 
 export type TCreateProjectPayload = z.infer<typeof createProjectSchema>;
+export type TUpdateProjectPayload = z.infer<typeof updatedProjectsSchema>;
 
 export type TProjectsFilter = {
     searchTerm?: string;

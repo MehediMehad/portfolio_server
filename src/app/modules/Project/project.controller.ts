@@ -31,7 +31,7 @@ const getAllProjects = catchAsync(async (req: Request, res: Response) => {
 
 // get single project by id
 const getSingleProject = catchAsync(async (req: Request, res: Response) => {
-    const { projectId } = req.params;
+    const projectId = req.params.id as string;
     const result = await ProjectServices.getSingleProject(projectId);
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -41,10 +41,10 @@ const getSingleProject = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const updateProject = catchAsync(async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
-
-    const result = await ProjectServices.updateProject(userId, req);
+const updateProjectById = catchAsync(async (req: Request, res: Response) => {
+    const projectId = req.params.id as string;
+    const body = req.body;
+    const result = await ProjectServices.updateProjectById(projectId, body);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -54,7 +54,7 @@ const updateProject = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteProject = catchAsync(async (req: Request, res: Response) => {
-    const { projectId } = req.params;
+    const projectId = req.params.id as string;
 
     const result = await ProjectServices.deleteProject(projectId);
     sendResponse(res, {
@@ -69,6 +69,6 @@ export const ProjectsController = {
     createProject,
     getAllProjects,
     getSingleProject,
-    updateProject,
+    updateProjectById,
     deleteProject
 };

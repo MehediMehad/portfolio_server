@@ -16,9 +16,7 @@ export const createProjectSchema = z.object({
     is_public: z.boolean().optional(),
 });
 
-const updatedProjectsSchema = createProjectSchema.extend({
-    updatedAt: z.date().optional()
-})
+export const updatedProjectsSchema = createProjectSchema.partial()
 
 export const ProjectValidation = {
     createProjectSchema,
