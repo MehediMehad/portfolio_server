@@ -20,8 +20,16 @@ const addFeaturedProject = async (projectId: string) => {
         where: { projectId },
     });
 
+    // If already featured, update createdAt
     if (alreadyFeatured) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Project already featured');
+        const updated = await prisma.featuredProjects.update({
+            where: { projectId },
+            data: {
+                createdAt: new Date(),
+            },
+        });
+
+        return updated;
     }
 
     const result = await prisma.featuredProjects.create({
