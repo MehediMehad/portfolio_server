@@ -21,10 +21,19 @@ const addFeaturedBlog = async (blogId: string) => {
         where: { blogId },
     });
 
+    // If already featured, update createdAt
     if (alreadyFeatured) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Blog already featured');
+        const updated = await prisma.featuredBlogs.update({
+            where: { blogId },
+            data: {
+                createdAt: new Date(),
+            },
+        });
+
+        return updated;
     }
 
+    // Create
     const result = await prisma.featuredBlogs.create({
         data: {
             blogId,
