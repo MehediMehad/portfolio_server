@@ -3,11 +3,11 @@ import { jwtHelpers, TPayloadToken } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 import * as bcrypt from 'bcrypt';
 import config from '../../../config';
-import ApiError from '../../errors/APIError';
 import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
 import emailSender from './emailSender';
 import resetEmailTemplate from '../../../helpers/emailTemplateHelpers';
+import ApiError from '../../errors/ApiError';
 
 const loginUser = async (payload: { email: string; password: string }) => {
     const userData = await prisma.user.findUnique({

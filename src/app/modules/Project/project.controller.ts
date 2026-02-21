@@ -4,8 +4,20 @@ import { catchAsync } from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { ProjectServices } from './project.service';
 import pick from '../../../shared/pick';
+import { CloudinaryFileUploader } from '../../middlewares/cloudinaryMulterMiddleware';
 
 const createProject = catchAsync(async (req: Request, res: Response) => {
+    // You can now optionally call manual Cloudinary upload
+    if (req.file || req.files) {
+        console.log("req.files====================", req.files);
+        // Example: image field
+        if ((req.files as any)?.image) {
+            const imagePath = (req.files as any).image[0].path;
+            const imageUrl = await CloudinaryFileUploader.uploadToCloudinary(imagePath, 'blog-images');
+            req.body.image = imageUrl; // replace path with actual Cloudinary URL
+        }
+    }
+
     const result = await ProjectServices.createProject(req.body);
     sendResponse(res, {
         statusCode: httpStatus.CREATED,

@@ -26,7 +26,7 @@ router.get('/:id', ProjectsController.getSingleProject);
 router.patch(
     '/:id',
     auth('ADMIN'),
-    CloudinaryFileUploader.uploadFields, // multipart/form-data → image upload
+    CloudinaryFileUploader.uploadFields,
     validateRequest(ProjectValidation.updatedProjectsSchema, {
         image: 'single',
     }),

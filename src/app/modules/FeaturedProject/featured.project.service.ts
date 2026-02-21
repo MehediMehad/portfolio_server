@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
-import ApiError from '../../errors/APIError';
+import ApiError from '../../errors/ApiError';
 
 const addFeaturedProject = async (projectId: string) => {
     // Check project exists & not deleted

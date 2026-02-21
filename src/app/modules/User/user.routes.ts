@@ -3,9 +3,7 @@ import { UserController } from './user.controller';
 import auth from '../../middlewares/auth';
 import { fileUploader } from '../../../helpers/fileUploader';
 import { UserValidation } from './user.validation';
-import { USER_ROLE } from './user.constant';
-import { validateRequest } from '../../middlewares/validateRequest';
-import ApiError from '../../errors/APIError';
+import ApiError from '../../errors/ApiError';
 
 const router = express.Router();
 

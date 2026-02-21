@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import { jwtHelpers } from '../../helpers/jwtHelpers';
 import config from '../../config';
 import { Secret } from 'jsonwebtoken';
-import ApiError from '../errors/APIError';
 import httpStatus from 'http-status';
 import { UserRole } from '@prisma/client';
+import ApiError from '../errors/ApiError';
 
 const auth = (...roles: UserRole[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {

@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import prisma from '../../../shared/prisma';
 import { IPaginationOptions } from '../../interface/pagination';
 import { paginationHelper } from '../../../helpers/paginationHelper';
-import ApiError from '../../errors/APIError';
+import ApiError from '../../errors/ApiError';
 
 const createBlog = async (payload: TCreateBlogPayload) => {
     const result = await prisma.blogs.create({

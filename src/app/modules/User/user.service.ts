@@ -6,7 +6,7 @@ import { IFile } from '../../interface/file';
 import { Request } from 'express';
 import { jwtHelpers, TPayloadToken } from '../../../helpers/jwtHelpers';
 import config from '../../../config';
-import ApiError from '../../errors/APIError';
+import ApiError from '../../errors/ApiError';
 import httpStatus from 'http-status';
 
 const createMyAccount = async (req: Request) => {

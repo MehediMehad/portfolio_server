@@ -1,9 +1,8 @@
-import { ProjectStatus } from '@prisma/client';
 import { z } from 'zod';
 
 
 export const createProjectSchema = z.object({
-    image: z.string().url(),
+    image: z.string(),
     title: z.string().min(3).trim(),
     overview: z.string().min(10).trim(),
     description: z.string().min(20).trim(),

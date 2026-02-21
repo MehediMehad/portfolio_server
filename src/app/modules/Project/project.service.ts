@@ -1,12 +1,12 @@
 import prisma from '../../../shared/prisma';
 import { Request } from 'express';
-import ApiError from '../../errors/APIError';
 import httpStatus from 'http-status';
 import { IFile } from '../../interface/file';
 import { TCreateProjectPayload, TProjectsFilter, TUpdateProjectPayload } from './projects.interface';
 import { Prisma } from '@prisma/client';
 import { IPaginationOptions } from '../../interface/pagination';
 import { paginationHelper } from '../../../helpers/paginationHelper';
+import ApiError from '../../errors/ApiError';
 
 const createProject = async (payload: TCreateProjectPayload) => {
     const result = await prisma.projects.create({

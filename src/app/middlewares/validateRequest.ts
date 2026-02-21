@@ -12,6 +12,7 @@ interface FileFieldMapping {
 const validateRequest =
     (schema: z.ZodTypeAny, fileFields?: FileFieldMapping) =>
         async (req: Request, _res: Response, next: NextFunction) => {
+            console.log("file🛑🛑🛑", req.file);
 
             try {
                 let data = req.body?.data ?? req.body;
@@ -24,6 +25,9 @@ const validateRequest =
                 // Single file (req.file) – rare in your case, but kept for completeness
                 // ──────────────────────────────────────────────
                 if (fileFields && req.file) {
+                    console.log("fileFields🛑🛑🛑", fileFields);
+                    console.log("file", req.file);
+
                     const fileFieldNames = Object.keys(fileFields);
                     const file = req.file as any; // or better: import { CloudinaryFile } or use Express.Multer.File
                     if (fileFieldNames.includes(file.fieldname) && fileFields[file.fieldname] === 'single') {

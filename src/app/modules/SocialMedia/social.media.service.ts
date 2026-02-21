@@ -1,6 +1,6 @@
 import prisma from '../../../shared/prisma';
 import { Request } from 'express';
-import ApiError from '../../errors/APIError';
+import ApiError from '../../errors/ApiError';
 import httpStatus from 'http-status';
 import { IFile } from '../../interface/file';
 import { fileUploader } from '../../../helpers/fileUploader';
